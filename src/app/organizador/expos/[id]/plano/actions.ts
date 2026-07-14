@@ -21,7 +21,7 @@ async function verificarPropietario(expoId: string) {
     .maybeSingle();
 
   if (!expo || expo.organizador_id !== user.id) {
-    throw new Error("No tienes permiso para editar el plano de esta expo.");
+    throw new Error("No tienes permiso para editar el plano de este evento.");
   }
 
   return { supabase, expoId, userId: user.id };

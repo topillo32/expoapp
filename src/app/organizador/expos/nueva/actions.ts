@@ -70,7 +70,7 @@ export async function crearExpo(
     .single();
 
   if (errorExpo || !expo) {
-    return { error: errorExpo?.message ?? "No se pudo crear la expo." };
+    return { error: errorExpo?.message ?? "No se pudo crear el evento." };
   }
 
   const { url: flyerUrl, error: errorFlyer } = await subirFlyerSiCorresponde(

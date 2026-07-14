@@ -111,7 +111,7 @@ export default async function PostularPage({
         <div className="mt-8">
           {tiposDisponibles.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              Esta expo todavía no tiene tipos de puesto habilitados para
+              Este evento todavía no tiene tipos de puesto habilitados para
               postulación.
             </p>
           ) : (

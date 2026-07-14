@@ -129,7 +129,7 @@ export default async function ExpoDetailPage({
             className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground hover:underline"
           >
             <ArrowLeft className="size-3.5" />
-            Volver a expos
+            Volver a eventos
           </Link>
 
           {expo.flyerUrl && (
@@ -285,7 +285,7 @@ export default async function ExpoDetailPage({
               <div className="mt-6 space-y-3">
                 {expo.actividades.length === 0 && (
                   <p className="text-sm text-muted-foreground">
-                    Todavía no hay actividades cargadas para esta expo.
+                    Todavía no hay actividades cargadas para este evento.
                   </p>
                 )}
                 {expo.actividades.map((actividad) => (
@@ -317,7 +317,7 @@ export default async function ExpoDetailPage({
           <aside className="lg:col-span-1">
             <Card className="border-primary/25 lg:sticky lg:top-24">
               <CardHeader>
-                <CardTitle className="text-lg">Postúlate a esta expo</CardTitle>
+                <CardTitle className="text-lg">Postúlate a este evento</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm text-muted-foreground">
                 <p>

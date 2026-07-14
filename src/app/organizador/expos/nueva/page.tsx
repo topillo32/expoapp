@@ -5,14 +5,14 @@ import { crearExpo } from "./actions";
 export default function NuevaExpoPage() {
   return (
     <div className="mx-auto max-w-2xl">
-      <Breadcrumbs items={[{ label: "Nueva expo" }]} />
-      <h1 className="font-heading text-3xl font-semibold tracking-tight">Crear expo</h1>
+      <Breadcrumbs items={[{ label: "Nuevo evento" }]} />
+      <h1 className="font-heading text-3xl font-semibold tracking-tight">Crear evento</h1>
       <p className="mt-1 text-muted-foreground">
-        Completa los datos de tu feria o expo.
+        Completa los datos de tu feria o evento.
       </p>
 
       <div className="mt-8">
-        <ExpoForm accion={crearExpo} textoBoton="Crear expo" textoEnviando="Creando..." />
+        <ExpoForm accion={crearExpo} textoBoton="Crear evento" textoEnviando="Creando..." />
       </div>
     </div>
   );

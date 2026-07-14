@@ -92,7 +92,7 @@ export async function crearPostulacion(
       .maybeSingle<{ gratisTotal: boolean; cupoGratis: number; precio: number | null }>();
 
     if (errorCupo || !cupoTipo) {
-      return { error: "Este tipo de puesto no está habilitado para esta expo." };
+      return { error: "Este tipo de puesto no está habilitado para este evento." };
     }
 
     esGratis = cupoTipo.gratisTotal || (quiereCupoGratis && cupoTipo.cupoGratis > 0);
@@ -101,7 +101,7 @@ export async function crearPostulacion(
     if (!esGratis && precioFinal == null) {
       return {
         error:
-          "Este tipo de puesto no tiene un precio configurado. Pídele al organizador que edite la expo y le ponga un precio (o lo marque como gratis).",
+          "Este tipo de puesto no tiene un precio configurado. Pídele al organizador que edite el evento y le ponga un precio (o lo marque como gratis).",
       };
     }
   }

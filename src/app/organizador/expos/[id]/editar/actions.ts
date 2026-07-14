@@ -31,7 +31,7 @@ export async function actualizarExpo(
     .maybeSingle();
 
   if (errorExpoActual || !expoActual || expoActual.organizador_id !== user.id) {
-    return { error: "No se encontró la expo o no tienes permiso para editarla." };
+    return { error: "No se encontró el evento o no tienes permiso para editarlo." };
   }
 
   const campos = parsearCamposExpo(formData);

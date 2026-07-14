@@ -31,7 +31,7 @@ export default function RegistroPage() {
             Crear cuenta
           </h1>
           <p className="text-sm text-muted-foreground">
-            Registrate como organizador de expos o como emprendedor.
+            Registrate como organizador de eventos o como emprendedor.
           </p>
         </CardHeader>
         <CardContent>
@@ -59,7 +59,7 @@ export default function RegistroPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="emprendedor">Emprendedor</SelectItem>
-                  <SelectItem value="organizador">Organizador de expos</SelectItem>
+                  <SelectItem value="organizador">Organizador de eventos</SelectItem>
                 </SelectContent>
               </Select>
             </div>

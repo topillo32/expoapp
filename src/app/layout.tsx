@@ -20,8 +20,8 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Expos",
-  description: "Plataforma para organizar y descubrir ferias y expos",
+  title: "FeriaSync",
+  description: "Plataforma para organizar y descubrir ferias y eventos",
 };
 
 export default function RootLayout({

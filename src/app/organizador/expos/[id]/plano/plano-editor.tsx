@@ -125,7 +125,7 @@ export function PlanoEditor({
 
     if (totalRestante <= 0) {
       setErrorLimite(
-        `Ya marcaste el máximo de puestos de la expo (${maxPuestos}). Sube el "Máximo de puestos" en "Editar expo" si necesitas más.`,
+        `Ya marcaste el máximo de puestos del evento (${maxPuestos}). Sube el "Máximo de puestos" en "Editar evento" si necesitas más.`,
       );
       return;
     }
@@ -278,7 +278,7 @@ export function PlanoEditor({
           {tiposDisponibles.length === 0 ? (
             <p className="mb-3 rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
               Antes de marcar puestos en el plano, habilita al menos un tipo de
-              puesto (con precio o gratis) en &quot;Editar expo&quot;.
+              puesto (con precio o gratis) en &quot;Editar evento&quot;.
             </p>
           ) : (
             <div className="glass-panel sticky top-16 z-10 mb-3 space-y-3 rounded-xl border border-white/10 bg-card/95 p-3 shadow-lg shadow-black/20">

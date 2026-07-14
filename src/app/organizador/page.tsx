@@ -41,7 +41,7 @@ export default async function OrganizadorDashboardPage() {
     <div>
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">Mis expos</h1>
+          <h1 className="font-heading text-3xl font-semibold tracking-tight">Mis eventos</h1>
           <p className="mt-1 text-muted-foreground">
             Administra tus ferias, sus horarios y las postulaciones de puestos.
           </p>
@@ -51,14 +51,14 @@ export default async function OrganizadorDashboardPage() {
           className={buttonVariants({ className: "shrink-0" })}
         >
           <PlusCircle className="size-4" />
-          Crear expo
+          Crear evento
         </Link>
       </div>
 
       {expos.length === 0 ? (
         <div className="rounded-xl border border-dashed py-16 text-center">
           <p className="text-sm text-muted-foreground">
-            Todavía no creaste ninguna expo.{" "}
+            Todavía no creaste ningún evento.{" "}
             <Link href="/organizador/expos/nueva" className="font-medium text-primary underline">
               Crea la primera
             </Link>

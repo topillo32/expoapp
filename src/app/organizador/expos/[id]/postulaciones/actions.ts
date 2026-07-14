@@ -21,7 +21,7 @@ async function verificarPropietario(expoId: string) {
     .maybeSingle();
 
   if (!expo || expo.organizador_id !== user.id) {
-    throw new Error("No tienes permiso para gestionar las postulaciones de esta expo.");
+    throw new Error("No tienes permiso para gestionar las postulaciones de este evento.");
   }
 
   return { supabase };

@@ -61,10 +61,10 @@ export default async function Home() {
             Encuentra tu próxima feria
           </div>
           <h1 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
-            Expos y ferias
+            Eventos y ferias
           </h1>
           <p className="mt-3 max-w-xl text-muted-foreground">
-            Descubre las próximas ferias y expos, sus fechas y actividades. No
+            Descubre las próximas ferias y eventos, sus fechas y actividades. No
             necesitas iniciar sesión para ver esta información.
           </p>
           {expos.length > 0 && (
@@ -72,7 +72,7 @@ export default async function Home() {
               <span className="font-heading text-2xl font-semibold text-foreground">
                 {expos.length}
               </span>{" "}
-              {expos.length === 1 ? "expo publicada" : "expos publicadas"} ahora mismo
+              {expos.length === 1 ? "evento publicado" : "eventos publicados"} ahora mismo
             </p>
           )}
         </div>
@@ -82,7 +82,7 @@ export default async function Home() {
         {expos.length === 0 ? (
           <div className="rounded-xl border border-dashed py-16 text-center">
             <p className="text-sm text-muted-foreground">
-              Todavía no hay expos publicadas. Vuelve a visitar esta página más
+              Todavía no hay eventos publicados. Vuelve a visitar esta página más
               adelante.
             </p>
           </div>

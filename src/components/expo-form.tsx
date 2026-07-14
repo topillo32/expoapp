@@ -71,9 +71,9 @@ function CampoFlyer({ flyerUrlActual }: { flyerUrlActual?: string }) {
 
   return (
     <div className="space-y-2">
-      <Label htmlFor="flyer">Flyer de la expo (imagen)</Label>
+      <Label htmlFor="flyer">Flyer del evento (imagen)</Label>
       <p className="text-xs text-muted-foreground">
-        Se muestra en la bandeja pública de ferias y en el detalle de la expo.
+        Se muestra en la bandeja pública de ferias y en el detalle del evento.
       </p>
       <Input id="flyer" name="flyer" type="file" accept="image/*" onChange={manejarCambio} />
       {preview ? (
@@ -207,7 +207,7 @@ function SeccionCard({
 export function ExpoForm({
   accion,
   valoresIniciales,
-  textoBoton = "Crear expo",
+  textoBoton = "Crear evento",
   textoEnviando = "Creando...",
 }: {
   accion: (prevState: EstadoFormExpo, formData: FormData) => Promise<EstadoFormExpo>;
@@ -238,7 +238,7 @@ export function ExpoForm({
     <form action={formAction} className="space-y-6">
       <SeccionCard icono={Store} titulo="Datos generales">
         <div className="space-y-2">
-          <Label htmlFor="nombre">Nombre de la expo</Label>
+          <Label htmlFor="nombre">Nombre del evento</Label>
           <Input id="nombre" name="nombre" required defaultValue={valoresIniciales?.nombre} />
         </div>
 
@@ -400,7 +400,7 @@ export function ExpoForm({
 
       <SeccionCard
         icono={Ticket}
-        titulo="Tipos de puesto que ofrece esta expo"
+        titulo="Tipos de puesto que ofrece este evento"
         descripcion="Activa los tipos que vas a permitir y define si son gratis o de pago. Los emprendedores solo van a poder postularse a los tipos que habilites acá."
       >
         <div className="space-y-3">
@@ -423,7 +423,7 @@ export function ExpoForm({
             className="accent-primary"
             defaultChecked={valoresIniciales?.publicar}
           />
-          Publicar esta expo (si no, queda como borrador)
+          Publicar este evento (si no, queda como borrador)
         </label>
       </SeccionCard>
 

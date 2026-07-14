@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { LayoutDashboard, Ticket } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { cerrarSesion } from "@/app/auth/actions";
@@ -27,10 +28,15 @@ export async function SiteHeader() {
           href="/"
           className="group flex items-center gap-2 font-heading text-lg font-semibold tracking-tight"
         >
-          <span className="flex size-7 -rotate-6 items-center justify-center rounded-lg bg-orange-500 text-white shadow-md shadow-orange-500/30 ring-1 ring-white/10 transition-transform duration-200 group-hover:rotate-0">
-            <Ticket className="size-4" />
-          </span>
-          Expos
+          <Image
+            src="/image/logo-mark.png"
+            alt=""
+            width={36}
+            height={36}
+            className="size-9 shrink-0 transition-transform duration-200 group-hover:scale-105"
+            priority
+          />
+          FeriaSync
         </Link>
 
         <nav className="flex items-center gap-1 text-sm">

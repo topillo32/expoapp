@@ -14,7 +14,7 @@ export function Breadcrumbs({ items }: { items: Breadcrumb[] }) {
         className="flex items-center gap-1 hover:text-foreground"
       >
         <LayoutDashboard className="size-3.5" />
-        Mis expos
+        Mis eventos
       </Link>
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-1.5">
