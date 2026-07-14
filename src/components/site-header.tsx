@@ -23,7 +23,7 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-background/70 backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-3.5">
+      <div className="flex w-full items-center justify-between px-6 py-3.5">
         <Link
           href="/"
           className="group flex items-center gap-2 font-heading text-lg font-semibold tracking-tight"

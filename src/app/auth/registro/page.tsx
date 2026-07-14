@@ -1,7 +1,6 @@
 "use client";
 
 import { useActionState } from "react";
-import { Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,9 +23,6 @@ export default function RegistroPage() {
     <div className="flex flex-1 items-center justify-center bg-background px-6 py-12">
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
-          <span className="mb-1 flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Ticket className="size-4.5" />
-          </span>
           <h1 className="font-heading text-2xl font-semibold tracking-tight">
             Crear cuenta
           </h1>
