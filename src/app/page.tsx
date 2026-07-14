@@ -1,64 +1,154 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Bath, CalendarDays, MapPin, ParkingCircle, Sparkles, Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createClient } from "@/lib/supabase/server";
+import { formatearRangoFechas } from "@/lib/format";
 
-export default function Home() {
+interface ExpoResumen {
+  id: string;
+  nombre: string;
+  descripcion: string | null;
+  fechaInicio: string;
+  fechaFin: string;
+  tieneEstacionamiento: boolean;
+  tieneBanos: boolean;
+  banosGratis: boolean | null;
+  tieneLuz: boolean;
+  flyerUrl: string | null;
+  recinto: { nombre: string; ciudad: string } | null;
+}
+
+export default async function Home() {
+  const supabase = await createClient();
+
+  const { data: expos, error } = await supabase
+    .from("expos")
+    .select(
+      `
+      id,
+      nombre,
+      descripcion,
+      fechaInicio:fecha_inicio,
+      fechaFin:fecha_fin,
+      tieneEstacionamiento:tiene_estacionamiento,
+      tieneBanos:tiene_banos,
+      banosGratis:banos_gratis,
+      tieneLuz:tiene_luz,
+      flyerUrl:flyer_url,
+      recinto:recinto_id(nombre, ciudad)
+      `,
+    )
+    .eq("estado", "publicada")
+    .order("fecha_inicio")
+    .returns<ExpoResumen[]>();
+
+  if (error) {
+    throw error;
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="flex flex-1 flex-col bg-background">
+      <section className="relative overflow-hidden border-b bg-radial-glow">
+        <div
+          className="bg-dot-pattern pointer-events-none absolute inset-0 opacity-40"
+          style={{ maskImage: "radial-gradient(ellipse at top left, black, transparent 65%)" }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+        <div className="relative mx-auto w-full max-w-5xl px-6 py-16">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+            <Sparkles className="size-3.5" />
+            Encuentra tu próxima feria
+          </div>
+          <h1 className="mt-4 font-heading text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+            Expos y ferias
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-3 max-w-xl text-muted-foreground">
+            Descubre las próximas ferias y expos, sus fechas y actividades. No
+            necesitas iniciar sesión para ver esta información.
           </p>
+          {expos.length > 0 && (
+            <p className="mt-6 text-sm text-muted-foreground">
+              <span className="font-heading text-2xl font-semibold text-foreground">
+                {expos.length}
+              </span>{" "}
+              {expos.length === 1 ? "expo publicada" : "expos publicadas"} ahora mismo
+            </p>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+      </section>
+
+      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12">
+        {expos.length === 0 ? (
+          <div className="rounded-xl border border-dashed py-16 text-center">
+            <p className="text-sm text-muted-foreground">
+              Todavía no hay expos publicadas. Vuelve a visitar esta página más
+              adelante.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2">
+            {expos.map((expo) => (
+              <Link key={expo.id} href={`/expos/${expo.id}`} className="group block">
+                <Card className="card-glow-hover h-full overflow-hidden pt-0 group-hover:-translate-y-1">
+                  {expo.flyerUrl ? (
+                    <div className="relative aspect-video w-full overflow-hidden">
+                      <Image
+                        src={expo.flyerUrl}
+                        alt={`Flyer de ${expo.nombre}`}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="h-2 bg-gradient-to-r from-primary to-primary/40" />
+                  )}
+                  <CardHeader className="pt-5">
+                    <CardTitle>{expo.nombre}</CardTitle>
+                    {expo.recinto && (
+                      <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <MapPin className="size-3.5 shrink-0" />
+                        {expo.recinto.nombre} · {expo.recinto.ciudad}
+                      </p>
+                    )}
+                  </CardHeader>
+                  <CardContent>
+                    {expo.descripcion && (
+                      <p className="line-clamp-2 text-sm text-muted-foreground">
+                        {expo.descripcion}
+                      </p>
+                    )}
+                    <p className="mt-3 flex items-center gap-1.5 text-sm font-medium">
+                      <CalendarDays className="size-4 text-primary" />
+                      {formatearRangoFechas(expo.fechaInicio, expo.fechaFin)}
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {expo.tieneEstacionamiento && (
+                        <Badge variant="secondary">
+                          <ParkingCircle className="size-3" />
+                          Estacionamiento
+                        </Badge>
+                      )}
+                      {expo.tieneBanos && (
+                        <Badge variant="secondary">
+                          <Bath className="size-3" />
+                          Baños {expo.banosGratis ? "gratis" : "pagos"}
+                        </Badge>
+                      )}
+                      {expo.tieneLuz && (
+                        <Badge variant="secondary">
+                          <Zap className="size-3" />
+                          Luz eléctrica
+                        </Badge>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );
