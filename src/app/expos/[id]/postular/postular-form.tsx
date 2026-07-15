@@ -150,6 +150,18 @@ export function PostularForm({
   const [ubicacionId, setUbicacionId] = useState<string | null>(null);
   const [tipoSeleccionado, setTipoSeleccionado] = useState(tipos[0]?.tipoPuesto ?? "");
   const [quiereCupoGratis, setQuiereCupoGratis] = useState(false);
+  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
+
+  const tiposEnPlano = useMemo(
+    () => Array.from(new Set(ubicaciones.map((u) => u.tipoPuesto))),
+    [ubicaciones],
+  );
+
+  const ubicacionesFiltradas = useMemo(
+    () =>
+      filtroTipo === "todos" ? ubicaciones : ubicaciones.filter((u) => u.tipoPuesto === filtroTipo),
+    [ubicaciones, filtroTipo],
+  );
 
   const ubicacionSeleccionada = useMemo(
     () => ubicaciones.find((u) => u.id === ubicacionId) ?? null,
@@ -188,6 +200,36 @@ export function PostularForm({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {tiposEnPlano.length > 1 && (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFiltroTipo("todos")}
+                  className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                    filtroTipo === "todos"
+                      ? "border-transparent bg-foreground text-background"
+                      : "border-input text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  Todos
+                </button>
+                {tiposEnPlano.map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setFiltroTipo(t)}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+                      filtroTipo === t
+                        ? `${COLOR_TIPO[t] ?? "bg-primary"} border-transparent text-white`
+                        : "border-input text-muted-foreground hover:bg-muted"
+                    }`}
+                  >
+                    {ETIQUETA_TIPO[t] ?? t}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="relative w-full overflow-hidden rounded-lg border select-none">
               <Image
                 src={planoUrl!}
@@ -197,7 +239,7 @@ export function PostularForm({
                 className="h-auto w-full"
                 unoptimized
               />
-              {ubicaciones.map((u) => {
+              {ubicacionesFiltradas.map((u) => {
                 const estadoPin = u.ocupado
                   ? "ocupado"
                   : u.id === ubicacionId
@@ -215,7 +257,7 @@ export function PostularForm({
                     title={`${ETIQUETA_TIPO[u.tipoPuesto] ?? u.tipoPuesto}${u.etiqueta ? " · " + u.etiqueta : ""} · ${precioTexto} · ${estadoPin === "ocupado" ? "Ocupado" : estadoPin === "seleccionado" ? "Seleccionado" : "Disponible"}`}
                   >
                     <span
-                      className={`flex size-7 items-center justify-center rounded-full text-[10px] font-semibold text-white shadow transition-all duration-200 ${
+                      className={`flex size-4 items-center justify-center rounded-full text-[8px] font-semibold text-white shadow transition-all duration-200 sm:size-7 sm:text-[10px] ${
                         estadoPin === "ocupado"
                           ? "bg-muted-foreground/40 opacity-60 ring-2 ring-white/40"
                           : estadoPin === "seleccionado"

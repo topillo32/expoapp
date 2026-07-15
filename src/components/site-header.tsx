@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LayoutDashboard } from "lucide-react";
+import { Bell, LayoutDashboard } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { cerrarSesion } from "@/app/auth/actions";
@@ -12,6 +12,7 @@ export async function SiteHeader() {
   } = await supabase.auth.getUser();
 
   let rol: string | null = null;
+  let novedades = 0;
   if (user) {
     const { data: perfil } = await supabase
       .from("perfiles")
@@ -19,6 +20,15 @@ export async function SiteHeader() {
       .eq("id", user.id)
       .maybeSingle();
     rol = perfil?.rol ?? null;
+
+    if (rol !== "organizador") {
+      const { count } = await supabase
+        .from("puestos")
+        .select("id", { count: "exact", head: true })
+        .eq("emprendedor_id", user.id)
+        .eq("resultado_visto", false);
+      novedades = count ?? 0;
+    }
   }
 
   return (
@@ -64,6 +74,21 @@ export async function SiteHeader() {
             >
               <LayoutDashboard className="size-4 transition-colors duration-200 group-hover/nav:text-primary" />
               Mi panel
+            </Link>
+          )}
+
+          {user && rol !== "organizador" && (
+            <Link
+              href="/mis-postulaciones"
+              className="group/nav relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted-foreground hover:bg-white/5 hover:text-foreground"
+            >
+              <Bell className="size-4 transition-colors duration-200 group-hover/nav:text-primary" />
+              Mis postulaciones
+              {novedades > 0 && (
+                <span className="absolute top-1 right-1 flex size-4 items-center justify-center rounded-full bg-destructive text-[10px] font-semibold text-white">
+                  {novedades > 9 ? "9+" : novedades}
+                </span>
+              )}
             </Link>
           )}
 

@@ -32,7 +32,11 @@ export async function aprobarPuesto(expoId: string, puestoId: string) {
 
   const { error } = await supabase
     .from("puestos")
-    .update({ estado: "aprobado", fecha_resolucion: new Date().toISOString() })
+    .update({
+      estado: "aprobado",
+      fecha_resolucion: new Date().toISOString(),
+      resultado_visto: false,
+    })
     .eq("id", puestoId)
     .eq("expo_id", expoId);
 
@@ -57,6 +61,7 @@ export async function rechazarPuesto(expoId: string, puestoId: string, formData:
       estado: "rechazado",
       motivo_rechazo: motivo || null,
       fecha_resolucion: new Date().toISOString(),
+      resultado_visto: false,
     })
     .eq("id", puestoId)
     .eq("expo_id", expoId);

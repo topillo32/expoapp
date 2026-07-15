@@ -125,5 +125,5 @@ export async function crearExpo(
     }
   }
 
-  redirect("/organizador");
+  redirect(`/organizador/expos/${expo.id}/plano`);
 }

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { extensionSegura, validarImagen } from "@/lib/validar-archivo";
 
 export interface EstadoFormPostular {
   error?: string;
@@ -113,10 +114,17 @@ export async function crearPostulacion(
     return { error: "Debes subir el comprobante de pago." };
   }
 
+  if (archivoComprobante) {
+    const errorValidacion = await validarImagen(archivoComprobante);
+    if (errorValidacion) {
+      return { error: errorValidacion };
+    }
+  }
+
   let comprobantePagoUrl: string | null = null;
 
   if (archivoComprobante) {
-    const extension = archivoComprobante.name.split(".").pop() ?? "jpg";
+    const extension = extensionSegura(archivoComprobante.name);
     const ruta = `${user.id}/${expoId}-${Date.now()}.${extension}`;
 
     const { error: errorUpload } = await supabase.storage

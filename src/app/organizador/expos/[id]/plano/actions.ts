@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { extensionSegura, validarImagen } from "@/lib/validar-archivo";
 
 async function verificarPropietario(expoId: string) {
   const supabase = await createClient();
@@ -43,7 +44,12 @@ export async function subirPlano(
     return { error: "Selecciona una imagen del plano." };
   }
 
-  const extension = archivo.name.split(".").pop() ?? "jpg";
+  const errorValidacion = await validarImagen(archivo);
+  if (errorValidacion) {
+    return { error: errorValidacion };
+  }
+
+  const extension = extensionSegura(archivo.name);
   const ruta = `${userId}/${expoId}/plano.${extension}`;
 
   const {

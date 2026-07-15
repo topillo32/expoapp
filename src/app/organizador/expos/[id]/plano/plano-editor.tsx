@@ -391,7 +391,7 @@ export function PlanoEditor({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div
-                  className={`flex size-6 items-center justify-center rounded-full text-[10px] font-semibold text-white shadow ring-2 ring-white transition-transform duration-200 group-hover:scale-110 ${COLOR_TIPO[u.tipoPuesto] ?? "bg-primary"}`}
+                  className={`flex size-4 items-center justify-center rounded-full text-[8px] font-semibold text-white shadow ring-2 ring-white transition-transform duration-200 group-hover:scale-110 sm:size-6 sm:text-[10px] ${COLOR_TIPO[u.tipoPuesto] ?? "bg-primary"}`}
                   title={`${ETIQUETA_TIPO[u.tipoPuesto]}${u.etiqueta ? " · " + u.etiqueta : ""}${u.esGratis ? " · Gratis" : u.precio ? ` · ${formatearPrecio(u.precio)}` : ""}`}
                 >
                   {u.etiqueta ? u.etiqueta.slice(0, 2) : ""}
@@ -429,7 +429,7 @@ export function PlanoEditor({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div
-                  className={`flex size-6 items-center justify-center rounded-full text-[10px] font-semibold text-white opacity-70 shadow ring-2 ring-dashed ring-white ${COLOR_TIPO[b.tipoPuesto] ?? "bg-primary"}`}
+                  className={`flex size-4 items-center justify-center rounded-full text-[8px] font-semibold text-white opacity-70 shadow ring-2 ring-dashed ring-white sm:size-6 sm:text-[10px] ${COLOR_TIPO[b.tipoPuesto] ?? "bg-primary"}`}
                   title={`${ETIQUETA_TIPO[b.tipoPuesto]} · ${b.etiqueta} · ${b.esGratis ? "Gratis" : formatearPrecio(b.precio ?? 0)} · sin guardar`}
                 >
                   {b.etiqueta ? b.etiqueta.slice(0, 2) : ""}

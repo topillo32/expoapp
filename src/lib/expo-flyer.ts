@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { extensionSegura, validarImagen } from "@/lib/validar-archivo";
 
 export async function subirFlyerSiCorresponde(
   supabase: SupabaseClient,
@@ -11,7 +12,12 @@ export async function subirFlyerSiCorresponde(
     return {};
   }
 
-  const extension = archivo.name.split(".").pop() ?? "jpg";
+  const errorValidacion = await validarImagen(archivo);
+  if (errorValidacion) {
+    return { error: errorValidacion };
+  }
+
+  const extension = extensionSegura(archivo.name);
   const ruta = `${userId}/${expoId}/flyer.${extension}`;
 
   const { error: errorUpload } = await supabase.storage
