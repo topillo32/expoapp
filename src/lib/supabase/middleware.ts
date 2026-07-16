@@ -27,7 +27,28 @@ export async function updateSession(request: NextRequest) {
 
   // Refresca el token si es necesario. No se puede quitar: sin esto las
   // sesiones expiran silenciosamente en Server Components.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    const { data: perfil } = await supabase
+      .from("perfiles")
+      .select("activo")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (perfil && perfil.activo === false) {
+      await supabase.auth.signOut();
+      const url = request.nextUrl.clone();
+      url.pathname = "/cuenta-suspendida";
+      const redirectResponse = NextResponse.redirect(url);
+      for (const cookie of response.cookies.getAll()) {
+        redirectResponse.cookies.set(cookie);
+      }
+      return redirectResponse;
+    }
+  }
 
   return response;
 }

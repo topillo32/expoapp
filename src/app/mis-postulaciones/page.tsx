@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatearPrecio } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import type { EstadoPuesto } from "@/lib/types";
+import { BotonCancelarPostulacion } from "./boton-cancelar-postulacion";
 import { SubirComprobanteForm } from "./subir-comprobante-form";
 
 const ETIQUETA_TIPO: Record<string, string> = {
@@ -19,6 +20,7 @@ const ETIQUETA_ESTADO: Record<EstadoPuesto, string> = {
   aceptado: "Aceptado · falta pagar",
   aprobado: "Aprobado",
   rechazado: "Rechazado",
+  cancelado: "Cancelada",
 };
 
 const ETIQUETA_TIPO_CUENTA: Record<string, string> = {
@@ -100,7 +102,7 @@ export default async function MisPostulacionesPage() {
   const pendientes = (postulaciones ?? []).filter((p) => p.estado === "pendiente");
   const esperandoPago = (postulaciones ?? []).filter((p) => p.estado === "aceptado");
   const resueltas = (postulaciones ?? []).filter(
-    (p) => p.estado === "aprobado" || p.estado === "rechazado",
+    (p) => p.estado === "aprobado" || p.estado === "rechazado" || p.estado === "cancelado",
   );
 
   return (
@@ -207,7 +209,9 @@ function TarjetaPostulacion({ p }: { p: PostulacionPropia }) {
                 ? "success"
                 : p.estado === "rechazado"
                   ? "destructive"
-                  : "warning"
+                  : p.estado === "cancelado"
+                    ? "outline"
+                    : "warning"
             }
           >
             {ETIQUETA_ESTADO[p.estado]}
@@ -250,6 +254,12 @@ function TarjetaPostulacion({ p }: { p: PostulacionPropia }) {
             ) : (
               <SubirComprobanteForm puestoId={p.id} />
             )}
+          </div>
+        )}
+
+        {(p.estado === "pendiente" || p.estado === "aceptado") && (
+          <div className="border-t pt-3">
+            <BotonCancelarPostulacion puestoId={p.id} />
           </div>
         )}
       </CardContent>

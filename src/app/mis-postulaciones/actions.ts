@@ -54,3 +54,24 @@ export async function subirComprobantePosterior(
   revalidatePath("/mis-postulaciones");
   return { ok: true };
 }
+
+export async function cancelarPostulacion(puestoId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Debes iniciar sesión.");
+  }
+
+  const { error } = await supabase.rpc("cancelar_postulacion", {
+    p_puesto_id: puestoId,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/mis-postulaciones");
+}

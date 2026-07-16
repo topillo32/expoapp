@@ -1,10 +1,10 @@
-export type RolUsuario = "organizador" | "emprendedor";
+export type RolUsuario = "organizador" | "emprendedor" | "admin";
 
 export type EstadoExpo = "borrador" | "publicada" | "finalizada";
 
 export type TipoPuesto = "emprendedor" | "comida" | "merchandising";
 
-export type EstadoPuesto = "pendiente" | "aceptado" | "aprobado" | "rechazado";
+export type EstadoPuesto = "pendiente" | "aceptado" | "aprobado" | "rechazado" | "cancelado";
 
 export interface Recinto {
   id: string;

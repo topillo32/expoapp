@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, LayoutDashboard } from "lucide-react";
+import { Bell, KeyRound, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { cerrarSesion } from "@/app/auth/actions";
@@ -21,7 +21,7 @@ export async function SiteHeader() {
       .maybeSingle();
     rol = perfil?.rol ?? null;
 
-    if (rol !== "organizador") {
+    if (rol === "emprendedor") {
       const { count } = await supabase
         .from("puestos")
         .select("id", { count: "exact", head: true })
@@ -77,7 +77,17 @@ export async function SiteHeader() {
             </Link>
           )}
 
-          {user && rol !== "organizador" && (
+          {user && rol === "admin" && (
+            <Link
+              href="/admin"
+              className="group/nav flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted-foreground hover:bg-white/5 hover:text-foreground"
+            >
+              <ShieldCheck className="size-4 transition-colors duration-200 group-hover/nav:text-primary" />
+              Administración
+            </Link>
+          )}
+
+          {user && rol === "emprendedor" && (
             <Link
               href="/mis-postulaciones"
               className="group/nav relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted-foreground hover:bg-white/5 hover:text-foreground"
@@ -89,6 +99,16 @@ export async function SiteHeader() {
                   {novedades > 9 ? "9+" : novedades}
                 </span>
               )}
+            </Link>
+          )}
+
+          {user && (
+            <Link
+              href="/cuenta"
+              className="group/nav flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted-foreground hover:bg-white/5 hover:text-foreground"
+              title="Cambiar contraseña"
+            >
+              <KeyRound className="size-4 transition-colors duration-200 group-hover/nav:text-primary" />
             </Link>
           )}
 

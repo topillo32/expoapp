@@ -22,6 +22,7 @@ const ETIQUETA_ESTADO: Record<EstadoPuesto, string> = {
   aceptado: "Aceptado · esperando pago",
   aprobado: "Aprobado",
   rechazado: "Rechazado",
+  cancelado: "Cancelada por el postulante",
 };
 
 interface PostulacionCruda {
@@ -120,7 +121,7 @@ export default async function PostulacionesPage({
   const pendientes = conComprobante.filter((p) => p.estado === "pendiente");
   const esperandoPago = conComprobante.filter((p) => p.estado === "aceptado");
   const resueltas = conComprobante.filter(
-    (p) => p.estado === "aprobado" || p.estado === "rechazado",
+    (p) => p.estado === "aprobado" || p.estado === "rechazado" || p.estado === "cancelado",
   );
 
   return (
@@ -249,7 +250,9 @@ function TarjetaPostulacion({
                 ? "success"
                 : p.estado === "rechazado"
                   ? "destructive"
-                  : "warning"
+                  : p.estado === "cancelado"
+                    ? "outline"
+                    : "warning"
             }
           >
             {ETIQUETA_ESTADO[p.estado]}
