@@ -138,11 +138,13 @@ export function PostularForm({
   tipos,
   planoUrl,
   ubicaciones,
+  requiereAceptacionPago,
 }: {
   expoId: string;
   tipos: TipoDisponible[];
   planoUrl: string | null;
   ubicaciones: UbicacionDisponible[];
+  requiereAceptacionPago: boolean;
 }) {
   const [estado, formAction, enviando] = useActionState(crearPostulacion, estadoInicial);
   const usaPlano = Boolean(planoUrl) && ubicaciones.length > 0;
@@ -178,7 +180,11 @@ export function PostularForm({
     : (tipo?.gratisTotal ?? false) || quiereCupoGratis;
 
   const precio = usaPlano ? ubicacionSeleccionada?.precio : tipo?.precio;
-  const requiereComprobante = !esGratis && (usaPlano ? ubicacionSeleccionada !== null : true);
+  const necesitaAceptacionPrevia = requiereAceptacionPago && !esGratis;
+  const requiereComprobante =
+    !esGratis &&
+    !necesitaAceptacionPrevia &&
+    (usaPlano ? ubicacionSeleccionada !== null : true);
 
   return (
     <form action={formAction} className="space-y-6">
@@ -325,6 +331,10 @@ export function PostularForm({
           <CardContent className="space-y-4">
             <Select
               name="tipo"
+              items={tipos.map((t) => ({
+                label: ETIQUETA_TIPO[t.tipoPuesto] ?? t.tipoPuesto,
+                value: t.tipoPuesto,
+              }))}
               value={tipoSeleccionado}
               onValueChange={(v) => {
                 if (typeof v === "string") {
@@ -486,6 +496,26 @@ export function PostularForm({
           </CardHeader>
           <CardContent>
             <ComprobanteDropzone />
+          </CardContent>
+        </Card>
+      )}
+
+      {necesitaAceptacionPrevia && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <NumeroPaso numero={4} />
+              <Receipt className="size-4 text-primary" />
+              Pago
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Este evento requiere que el organizador acepte tu postulación
+              antes de pagar. Una vez que la aceptes, vas a ver los datos de
+              transferencia y vas a poder subir el comprobante desde{" "}
+              <span className="font-medium text-foreground">Mis postulaciones</span>.
+            </p>
           </CardContent>
         </Card>
       )}

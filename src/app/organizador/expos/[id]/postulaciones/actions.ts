@@ -27,6 +27,29 @@ async function verificarPropietario(expoId: string) {
   return { supabase };
 }
 
+export async function aceptarPostulante(expoId: string, puestoId: string) {
+  const { supabase } = await verificarPropietario(expoId);
+
+  const { error } = await supabase
+    .from("puestos")
+    .update({
+      estado: "aceptado",
+      resultado_visto: false,
+    })
+    .eq("id", puestoId)
+    .eq("expo_id", expoId)
+    .eq("estado", "pendiente");
+
+  const ruta = `/organizador/expos/${expoId}/postulaciones`;
+
+  if (error) {
+    redirect(`${ruta}?error=${encodeURIComponent(error.message)}`);
+  }
+
+  revalidatePath(ruta);
+  redirect(ruta);
+}
+
 export async function aprobarPuesto(expoId: string, puestoId: string) {
   const { supabase } = await verificarPropietario(expoId);
 

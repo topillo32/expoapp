@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { validarRut } from "@/lib/rut";
 import { extensionSegura, validarImagen } from "@/lib/validar-archivo";
 
 export interface EstadoFormPostular {
@@ -51,6 +52,16 @@ export async function crearPostulacion(
   if (categorias.length === 0) {
     return { error: "Selecciona al menos una categoría de lo que vendes." };
   }
+
+  if (!validarRut(rut)) {
+    return { error: "El RUT ingresado no es válido." };
+  }
+
+  const { data: expoInfo } = await supabase
+    .from("expos")
+    .select("requiereAceptacionPago:requiere_aceptacion_pago")
+    .eq("id", expoId)
+    .maybeSingle<{ requiereAceptacionPago: boolean }>();
 
   let esGratis: boolean;
   let precioFinal: number | null;
@@ -107,10 +118,14 @@ export async function crearPostulacion(
     }
   }
 
-  const archivoComprobante =
-    comprobante instanceof File && comprobante.size > 0 ? comprobante : null;
+  const necesitaAceptacionPrevia = Boolean(expoInfo?.requiereAceptacionPago) && !esGratis;
 
-  if (!esGratis && !archivoComprobante) {
+  const archivoComprobante =
+    !necesitaAceptacionPrevia && comprobante instanceof File && comprobante.size > 0
+      ? comprobante
+      : null;
+
+  if (!esGratis && !necesitaAceptacionPrevia && !archivoComprobante) {
     return { error: "Debes subir el comprobante de pago." };
   }
 

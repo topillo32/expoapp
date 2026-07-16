@@ -1,8 +1,20 @@
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ExpoForm } from "@/components/expo-form";
+import { createClient } from "@/lib/supabase/server";
 import { crearExpo } from "./actions";
 
-export default function NuevaExpoPage() {
+export default async function NuevaExpoPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: cuentasDisponibles } = await supabase
+    .from("cuentas_transferencia")
+    .select("id, alias")
+    .eq("organizador_id", user?.id ?? "")
+    .order("creado_en", { ascending: false });
+
   return (
     <div className="mx-auto max-w-2xl">
       <Breadcrumbs items={[{ label: "Nuevo evento" }]} />
@@ -12,7 +24,12 @@ export default function NuevaExpoPage() {
       </p>
 
       <div className="mt-8">
-        <ExpoForm accion={crearExpo} textoBoton="Crear evento" textoEnviando="Creando..." />
+        <ExpoForm
+          accion={crearExpo}
+          cuentasDisponibles={cuentasDisponibles ?? []}
+          textoBoton="Crear evento"
+          textoEnviando="Creando..."
+        />
       </div>
     </div>
   );

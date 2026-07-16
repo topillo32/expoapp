@@ -2,7 +2,9 @@
 
 import { useActionState, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
+  Banknote,
   CalendarClock,
   ImageIcon,
   Landmark,
@@ -15,6 +17,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { EstadoFormExpo } from "@/lib/expo-form-types";
 
@@ -58,6 +67,13 @@ export interface ValoresInicialesExpo {
   horarios: { fecha: string; horaInicio: string; horaFin: string }[];
   cuposPorTipo: Partial<Record<(typeof TIPOS_PUESTO)[number]["valor"], ValoresCupoTipo>>;
   flyerUrl?: string;
+  requiereAceptacionPago: boolean;
+  cuentaTransferenciaId?: string;
+}
+
+export interface CuentaDisponible {
+  id: string;
+  alias: string;
 }
 
 function CampoFlyer({ flyerUrlActual }: { flyerUrlActual?: string }) {
@@ -207,11 +223,13 @@ function SeccionCard({
 export function ExpoForm({
   accion,
   valoresIniciales,
+  cuentasDisponibles = [],
   textoBoton = "Crear evento",
   textoEnviando = "Creando...",
 }: {
   accion: (prevState: EstadoFormExpo, formData: FormData) => Promise<EstadoFormExpo>;
   valoresIniciales?: ValoresInicialesExpo;
+  cuentasDisponibles?: CuentaDisponible[];
   textoBoton?: string;
   textoEnviando?: string;
 }) {
@@ -222,6 +240,9 @@ export function ExpoForm({
       : [{ id: 1, fecha: "", horaInicio: "", horaFin: "" }],
   );
   const [tieneBanos, setTieneBanos] = useState(valoresIniciales?.tieneBanos ?? false);
+  const [requiereAceptacionPago, setRequiereAceptacionPago] = useState(
+    valoresIniciales?.requiereAceptacionPago ?? false,
+  );
 
   function agregarHorario() {
     setHorarios((prev) => [
@@ -413,6 +434,55 @@ export function ExpoForm({
             />
           ))}
         </div>
+      </SeccionCard>
+
+      <SeccionCard
+        icono={Banknote}
+        titulo="Pagos"
+        descripcion="Opcional: exige aceptar manualmente a cada postulante de un puesto pago antes de que vea los datos de transferencia y suba el comprobante."
+      >
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            name="requiereAceptacionPago"
+            className="accent-primary"
+            checked={requiereAceptacionPago}
+            onChange={(e) => setRequiereAceptacionPago(e.target.checked)}
+          />
+          Requiere aceptar postulantes antes del pago
+        </label>
+
+        {requiereAceptacionPago && (
+          <div className="space-y-2 pl-6">
+            <Label className="text-xs">Cuenta de transferencia a usar en este evento</Label>
+            {cuentasDisponibles.length === 0 ? (
+              <p className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
+                Todavía no tienes cuentas registradas.{" "}
+                <Link href="/organizador/cuentas/nueva" className="underline">
+                  Crea una primero
+                </Link>
+                .
+              </p>
+            ) : (
+              <Select
+                name="cuentaTransferenciaId"
+                items={cuentasDisponibles.map((c) => ({ label: c.alias, value: c.id }))}
+                defaultValue={valoresIniciales?.cuentaTransferenciaId}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Elige una cuenta" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cuentasDisponibles.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.alias}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+        )}
       </SeccionCard>
 
       <SeccionCard icono={Landmark} titulo="Publicación">

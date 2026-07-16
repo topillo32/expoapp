@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Landmark } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatearPrecio } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
+import type { EstadoPuesto } from "@/lib/types";
+import { SubirComprobanteForm } from "./subir-comprobante-form";
 
 const ETIQUETA_TIPO: Record<string, string> = {
   emprendedor: "Emprendedor",
@@ -12,21 +14,46 @@ const ETIQUETA_TIPO: Record<string, string> = {
   merchandising: "Merchandising",
 };
 
-const ETIQUETA_ESTADO: Record<string, string> = {
+const ETIQUETA_ESTADO: Record<EstadoPuesto, string> = {
   pendiente: "Pendiente",
+  aceptado: "Aceptado · falta pagar",
   aprobado: "Aprobado",
   rechazado: "Rechazado",
 };
 
+const ETIQUETA_TIPO_CUENTA: Record<string, string> = {
+  corriente: "Cuenta corriente",
+  vista: "Cuenta vista",
+  ahorro: "Cuenta de ahorro",
+  rut: "Cuenta RUT",
+};
+
+interface CuentaTransferenciaCruda {
+  alias: string;
+  banco: string;
+  tipoCuenta: string;
+  numeroCuenta: string;
+  rutTitular: string;
+  nombreTitular: string;
+  emailContacto: string | null;
+}
+
 interface PostulacionPropia {
   id: string;
   tipo: string;
+  nombreTienda: string;
   esGratis: boolean;
   precio: number | null;
-  estado: "pendiente" | "aprobado" | "rechazado";
+  estado: EstadoPuesto;
+  comprobantePagoUrl: string | null;
   motivoRechazo: string | null;
   fechaSolicitud: string;
-  expo: { id: string; nombre: string } | null;
+  ubicacion: { etiqueta: string | null } | null;
+  expo: {
+    id: string;
+    nombre: string;
+    cuentaTransferencia: CuentaTransferenciaCruda | null;
+  } | null;
 }
 
 export default async function MisPostulacionesPage() {
@@ -45,12 +72,19 @@ export default async function MisPostulacionesPage() {
       `
       id,
       tipo,
+      nombreTienda:nombre_tienda,
       esGratis:es_gratis,
       precio,
       estado,
+      comprobantePagoUrl:comprobante_pago_url,
       motivoRechazo:motivo_rechazo,
       fechaSolicitud:fecha_solicitud,
-      expo:expo_id(id, nombre)
+      ubicacion:ubicacion_id(etiqueta),
+      expo:expo_id(
+        id,
+        nombre,
+        cuentaTransferencia:cuenta_transferencia_id(alias, banco, tipoCuenta:tipo_cuenta, numeroCuenta:numero_cuenta, rutTitular:rut_titular, nombreTitular:nombre_titular, emailContacto:email_contacto)
+      )
       `,
     )
     .eq("emprendedor_id", user.id)
@@ -64,7 +98,10 @@ export default async function MisPostulacionesPage() {
   await supabase.rpc("marcar_postulaciones_vistas");
 
   const pendientes = (postulaciones ?? []).filter((p) => p.estado === "pendiente");
-  const resueltas = (postulaciones ?? []).filter((p) => p.estado !== "pendiente");
+  const esperandoPago = (postulaciones ?? []).filter((p) => p.estado === "aceptado");
+  const resueltas = (postulaciones ?? []).filter(
+    (p) => p.estado === "aprobado" || p.estado === "rechazado",
+  );
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
@@ -101,6 +138,19 @@ export default async function MisPostulacionesPage() {
             )}
           </section>
 
+          {esperandoPago.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-lg font-medium">
+                Aceptadas · falta pagar ({esperandoPago.length})
+              </h2>
+              <div className="mt-4 space-y-3">
+                {esperandoPago.map((p) => (
+                  <TarjetaPostulacion key={p.id} p={p} />
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="mt-10">
             <h2 className="text-lg font-medium">Resueltas ({resueltas.length})</h2>
             {resueltas.length === 0 ? (
@@ -127,23 +177,30 @@ function TarjetaPostulacion({ p }: { p: PostulacionPropia }) {
     month: "long",
     year: "numeric",
   });
+  const cuenta = p.expo?.cuentaTransferencia;
 
   return (
     <Card>
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle className="text-base">
-            {p.expo ? (
-              <Link href={`/expos/${p.expo.id}`} className="hover:underline">
-                {p.expo.nombre}
-              </Link>
-            ) : (
-              "Evento"
-            )}{" "}
-            <span className="font-sans text-sm font-normal text-muted-foreground">
-              · {ETIQUETA_TIPO[p.tipo] ?? p.tipo}
-            </span>
-          </CardTitle>
+          <div>
+            <CardTitle className="text-base">
+              {p.expo ? (
+                <Link href={`/expos/${p.expo.id}`} className="hover:underline">
+                  {p.expo.nombre}
+                </Link>
+              ) : (
+                "Evento"
+              )}{" "}
+              <span className="font-sans text-sm font-normal text-muted-foreground">
+                · {ETIQUETA_TIPO[p.tipo] ?? p.tipo}
+              </span>
+            </CardTitle>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {p.nombreTienda}
+              {p.ubicacion?.etiqueta && ` · Puesto ${p.ubicacion.etiqueta}`}
+            </p>
+          </div>
           <Badge
             variant={
               p.estado === "aprobado"
@@ -169,6 +226,31 @@ function TarjetaPostulacion({ p }: { p: PostulacionPropia }) {
           <p className="rounded-md bg-destructive/10 p-2 text-xs text-destructive">
             Motivo: {p.motivoRechazo}
           </p>
+        )}
+
+        {p.estado === "aceptado" && cuenta && (
+          <div className="space-y-3 rounded-lg border bg-muted/30 p-3">
+            <p className="flex items-center gap-1.5 text-xs font-medium text-foreground">
+              <Landmark className="size-3.5 text-primary" />
+              Transfiere a esta cuenta
+            </p>
+            <div className="grid gap-1 text-xs text-muted-foreground sm:grid-cols-2">
+              <p>{cuenta.banco}</p>
+              <p>{ETIQUETA_TIPO_CUENTA[cuenta.tipoCuenta] ?? cuenta.tipoCuenta}</p>
+              <p>N° {cuenta.numeroCuenta}</p>
+              <p>
+                {cuenta.nombreTitular} · {cuenta.rutTitular}
+              </p>
+              {cuenta.emailContacto && <p>{cuenta.emailContacto}</p>}
+            </div>
+            {p.comprobantePagoUrl ? (
+              <p className="text-xs text-muted-foreground">
+                Ya subiste tu comprobante. Esperando confirmación del organizador.
+              </p>
+            ) : (
+              <SubirComprobanteForm puestoId={p.id} />
+            )}
+          </div>
         )}
       </CardContent>
     </Card>

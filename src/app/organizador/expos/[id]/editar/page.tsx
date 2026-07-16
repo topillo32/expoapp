@@ -20,6 +20,8 @@ interface ExpoParaEditar {
   tieneLuz: boolean;
   estado: string;
   flyerUrl: string | null;
+  requiereAceptacionPago: boolean;
+  cuentaTransferenciaId: string | null;
   recinto: { nombre: string; direccion: string | null; ciudad: string | null } | null;
   horarios: { fecha: string; horaInicio: string; horaFin: string }[];
   cuposPorTipo: {
@@ -59,6 +61,8 @@ export default async function EditarExpoPage({
       tieneLuz:tiene_luz,
       estado,
       flyerUrl:flyer_url,
+      requiereAceptacionPago:requiere_aceptacion_pago,
+      cuentaTransferenciaId:cuenta_transferencia_id,
       recinto:recinto_id(nombre, direccion, ciudad),
       horarios:expo_horarios(fecha, horaInicio:hora_inicio, horaFin:hora_fin),
       cuposPorTipo:expo_cupos_tipo(tipoPuesto:tipo_puesto, gratisTotal:gratis_total, cupoGratis:cupo_gratis, precio, maxCupo:max_cupo)
@@ -80,6 +84,12 @@ export default async function EditarExpoPage({
     notFound();
   }
 
+  const { data: cuentasDisponibles } = await supabase
+    .from("cuentas_transferencia")
+    .select("id, alias")
+    .eq("organizador_id", user?.id ?? "")
+    .order("creado_en", { ascending: false });
+
   const valoresIniciales: ValoresInicialesExpo = {
     nombre: expo.nombre,
     descripcion: expo.descripcion ?? "",
@@ -92,6 +102,8 @@ export default async function EditarExpoPage({
     tieneLuz: expo.tieneLuz,
     publicar: expo.estado === "publicada",
     flyerUrl: expo.flyerUrl ?? undefined,
+    requiereAceptacionPago: expo.requiereAceptacionPago,
+    cuentaTransferenciaId: expo.cuentaTransferenciaId ?? undefined,
     recintoNombre: expo.recinto?.nombre ?? "",
     recintoDireccion: expo.recinto?.direccion ?? "",
     recintoCiudad: expo.recinto?.ciudad ?? "",
@@ -146,6 +158,7 @@ export default async function EditarExpoPage({
         <ExpoForm
           accion={accion}
           valoresIniciales={valoresIniciales}
+          cuentasDisponibles={cuentasDisponibles ?? []}
           textoBoton="Guardar cambios"
           textoEnviando="Guardando..."
         />

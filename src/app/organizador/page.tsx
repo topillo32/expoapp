@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, PlusCircle } from "lucide-react";
+import { CalendarDays, Landmark, PlusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,13 +46,19 @@ export default async function OrganizadorDashboardPage() {
             Administra tus ferias, sus horarios y las postulaciones de puestos.
           </p>
         </div>
-        <Link
-          href="/organizador/expos/nueva"
-          className={buttonVariants({ className: "shrink-0" })}
-        >
-          <PlusCircle className="size-4" />
-          Crear evento
-        </Link>
+        <div className="flex shrink-0 gap-2">
+          <Link
+            href="/organizador/cuentas"
+            className={buttonVariants({ variant: "outline" })}
+          >
+            <Landmark className="size-4" />
+            Cuentas de transferencia
+          </Link>
+          <Link href="/organizador/expos/nueva" className={buttonVariants({})}>
+            <PlusCircle className="size-4" />
+            Crear evento
+          </Link>
+        </div>
       </div>
 
       {expos.length === 0 ? (

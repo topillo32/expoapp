@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -17,6 +16,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { formatearFecha, formatearPrecio, formatearRangoFechas } from "@/lib/format";
+import { FlyerLightbox } from "@/components/flyer-lightbox";
 
 const ETIQUETA_TIPO: Record<string, string> = {
   emprendedor: "Emprendedores",
@@ -133,15 +133,7 @@ export default async function ExpoDetailPage({
           </Link>
 
           {expo.flyerUrl && (
-            <div className="relative mt-4 aspect-[21/9] w-full overflow-hidden rounded-xl border">
-              <Image
-                src={expo.flyerUrl}
-                alt={`Flyer de ${expo.nombre}`}
-                fill
-                unoptimized
-                className="object-cover"
-              />
-            </div>
+            <FlyerLightbox url={expo.flyerUrl} alt={`Flyer de ${expo.nombre}`} />
           )}
 
           <h1 className="mt-4 font-heading text-3xl font-semibold tracking-tight sm:text-4xl">

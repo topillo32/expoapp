@@ -4,7 +4,7 @@ export type EstadoExpo = "borrador" | "publicada" | "finalizada";
 
 export type TipoPuesto = "emprendedor" | "comida" | "merchandising";
 
-export type EstadoPuesto = "pendiente" | "aprobado" | "rechazado";
+export type EstadoPuesto = "pendiente" | "aceptado" | "aprobado" | "rechazado";
 
 export interface Recinto {
   id: string;
@@ -58,6 +58,18 @@ export interface ExpoCupoTipo {
   precio?: number;
 }
 
+export interface CuentaTransferencia {
+  id: string;
+  organizadorId: string;
+  alias: string;
+  banco: string;
+  tipoCuenta: string;
+  numeroCuenta: string;
+  rutTitular: string;
+  nombreTitular: string;
+  emailContacto?: string;
+}
+
 export interface UbicacionPuesto {
   id: string;
   expoId: string;
@@ -88,6 +100,8 @@ export interface Expo {
   cuposPorTipo: ExpoCupoTipo[];
   planoUrl?: string;
   flyerUrl?: string;
+  requiereAceptacionPago: boolean;
+  cuentaTransferenciaId?: string;
   ubicaciones: UbicacionPuesto[];
 }
 

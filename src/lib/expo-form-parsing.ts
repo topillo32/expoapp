@@ -14,6 +14,8 @@ export interface CamposExpo {
   recintoNombre: string;
   recintoDireccion: string;
   recintoCiudad: string;
+  requiereAceptacionPago: boolean;
+  cuentaTransferenciaId: string | null;
 }
 
 export function parsearCamposExpo(formData: FormData): CamposExpo {
@@ -31,6 +33,8 @@ export function parsearCamposExpo(formData: FormData): CamposExpo {
     recintoNombre: String(formData.get("recintoNombre") ?? "").trim(),
     recintoDireccion: String(formData.get("recintoDireccion") ?? "").trim(),
     recintoCiudad: String(formData.get("recintoCiudad") ?? "").trim(),
+    requiereAceptacionPago: formData.get("requiereAceptacionPago") === "on",
+    cuentaTransferenciaId: String(formData.get("cuentaTransferenciaId") ?? "").trim() || null,
   };
 }
 

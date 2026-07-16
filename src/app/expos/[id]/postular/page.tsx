@@ -24,6 +24,7 @@ interface ExpoParaPostular {
   nombre: string;
   estado: string;
   planoUrl: string | null;
+  requiereAceptacionPago: boolean;
   cuposPorTipo: CupoTipoCrudo[];
   ubicaciones: UbicacionCruda[];
 }
@@ -52,6 +53,7 @@ export default async function PostularPage({
       nombre,
       estado,
       planoUrl:plano_url,
+      requiereAceptacionPago:requiere_aceptacion_pago,
       cuposPorTipo:expo_cupos_tipo(tipoPuesto:tipo_puesto, gratisTotal:gratis_total, cupoGratis:cupo_gratis, precio),
       ubicaciones:ubicaciones_puesto(id, tipoPuesto:tipo_puesto, posX:pos_x, posY:pos_y, etiqueta, esGratis:es_gratis, precio)
       `,
@@ -120,6 +122,7 @@ export default async function PostularPage({
               tipos={tiposDisponibles}
               planoUrl={expo.planoUrl}
               ubicaciones={ubicaciones}
+              requiereAceptacionPago={expo.requiereAceptacionPago}
             />
           )}
         </div>

@@ -46,6 +46,10 @@ export async function actualizarExpo(
     return { error: "Completa los campos obligatorios (nombre, recinto y fechas)." };
   }
 
+  if (campos.requiereAceptacionPago && !campos.cuentaTransferenciaId) {
+    return { error: "Elige qué cuenta de transferencia va a usar este evento." };
+  }
+
   const { error: errorRecinto } = await supabase
     .from("recintos")
     .update({
@@ -72,6 +76,8 @@ export async function actualizarExpo(
       banos_gratis: campos.tieneBanos ? campos.banosGratis : null,
       tiene_luz: campos.tieneLuz,
       estado: campos.publicarAhora ? "publicada" : "borrador",
+      requiere_aceptacion_pago: campos.requiereAceptacionPago,
+      cuenta_transferencia_id: campos.requiereAceptacionPago ? campos.cuentaTransferenciaId : null,
     })
     .eq("id", expoId);
 

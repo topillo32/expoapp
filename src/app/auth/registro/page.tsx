@@ -49,7 +49,14 @@ export default function RegistroPage() {
 
             <div className="space-y-2">
               <Label htmlFor="rol">Quiero registrarme como</Label>
-              <Select name="rol" defaultValue="emprendedor">
+              <Select
+                name="rol"
+                items={[
+                  { label: "Emprendedor", value: "emprendedor" },
+                  { label: "Organizador de eventos", value: "organizador" },
+                ]}
+                defaultValue="emprendedor"
+              >
                 <SelectTrigger id="rol" className="w-full">
                   <SelectValue />
                 </SelectTrigger>

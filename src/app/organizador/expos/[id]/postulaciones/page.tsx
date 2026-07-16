@@ -7,8 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { formatearPrecio } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-import { ETIQUETA_CATEGORIA, type CategoriaPuesto } from "@/lib/types";
-import { aprobarPuesto, rechazarPuesto } from "./actions";
+import { ETIQUETA_CATEGORIA, type CategoriaPuesto, type EstadoPuesto } from "@/lib/types";
+import { aceptarPostulante, aprobarPuesto, rechazarPuesto } from "./actions";
 import { ComprobanteLightbox } from "./comprobante-lightbox";
 
 const ETIQUETA_TIPO: Record<string, string> = {
@@ -17,8 +17,9 @@ const ETIQUETA_TIPO: Record<string, string> = {
   merchandising: "Merchandising",
 };
 
-const ETIQUETA_ESTADO: Record<string, string> = {
+const ETIQUETA_ESTADO: Record<EstadoPuesto, string> = {
   pendiente: "Pendiente",
+  aceptado: "Aceptado · esperando pago",
   aprobado: "Aprobado",
   rechazado: "Rechazado",
 };
@@ -37,7 +38,7 @@ interface PostulacionCruda {
   acompanantes: number;
   vieneEnAuto: boolean;
   necesitaLuz: boolean;
-  estado: "pendiente" | "aprobado" | "rechazado";
+  estado: EstadoPuesto;
   comprobantePagoUrl: string | null;
   motivoRechazo: string | null;
   fechaSolicitud: string;
@@ -62,10 +63,10 @@ export default async function PostulacionesPage({
 
   const { data: expo } = await supabase
     .from("expos")
-    .select("id, nombre")
+    .select("id, nombre, requiereAceptacionPago:requiere_aceptacion_pago")
     .eq("id", id)
     .eq("organizador_id", user?.id ?? "")
-    .maybeSingle();
+    .maybeSingle<{ id: string; nombre: string; requiereAceptacionPago: boolean }>();
 
   if (!expo) {
     notFound();
@@ -117,7 +118,10 @@ export default async function PostulacionesPage({
   );
 
   const pendientes = conComprobante.filter((p) => p.estado === "pendiente");
-  const resueltas = conComprobante.filter((p) => p.estado !== "pendiente");
+  const esperandoPago = conComprobante.filter((p) => p.estado === "aceptado");
+  const resueltas = conComprobante.filter(
+    (p) => p.estado === "aprobado" || p.estado === "rechazado",
+  );
 
   return (
     <div>
@@ -153,11 +157,38 @@ export default async function PostulacionesPage({
         ) : (
           <div className="mt-4 space-y-4">
             {pendientes.map((p) => (
-              <TarjetaPostulacion key={p.id} p={p} expoId={expo.id} accionable />
+              <TarjetaPostulacion
+                key={p.id}
+                p={p}
+                expoId={expo.id}
+                requiereAceptacionPago={expo.requiereAceptacionPago}
+              />
             ))}
           </div>
         )}
       </section>
+
+      {expo.requiereAceptacionPago && (
+        <section className="mt-10">
+          <h2 className="text-lg font-medium">Esperando pago ({esperandoPago.length})</h2>
+          {esperandoPago.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">
+              No hay postulantes aceptados esperando pagar.
+            </p>
+          ) : (
+            <div className="mt-4 space-y-4">
+              {esperandoPago.map((p) => (
+                <TarjetaPostulacion
+                  key={p.id}
+                  p={p}
+                  expoId={expo.id}
+                  requiereAceptacionPago={expo.requiereAceptacionPago}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       <section className="mt-10">
         <h2 className="text-lg font-medium">Resueltas ({resueltas.length})</h2>
@@ -168,7 +199,12 @@ export default async function PostulacionesPage({
         ) : (
           <div className="mt-4 space-y-4">
             {resueltas.map((p) => (
-              <TarjetaPostulacion key={p.id} p={p} expoId={expo.id} accionable={false} />
+              <TarjetaPostulacion
+                key={p.id}
+                p={p}
+                expoId={expo.id}
+                requiereAceptacionPago={expo.requiereAceptacionPago}
+              />
             ))}
           </div>
         )}
@@ -180,14 +216,21 @@ export default async function PostulacionesPage({
 function TarjetaPostulacion({
   p,
   expoId,
-  accionable,
+  requiereAceptacionPago,
 }: {
   p: PostulacionCruda & { comprobanteSignedUrl: string | null };
   expoId: string;
-  accionable: boolean;
+  requiereAceptacionPago: boolean;
 }) {
+  const aceptarConIds = aceptarPostulante.bind(null, expoId, p.id);
   const aprobarConIds = aprobarPuesto.bind(null, expoId, p.id);
   const rechazarConIds = rechazarPuesto.bind(null, expoId, p.id);
+
+  const necesitaAceptacionPrimero =
+    requiereAceptacionPago && !p.esGratis && p.estado === "pendiente";
+  const esperandoComprobante = p.estado === "aceptado" && !p.comprobanteSignedUrl;
+  const puedeResolverDirecto = p.estado === "pendiente" || p.estado === "aceptado";
+  const textoAprobar = p.esGratis ? "Aprobar" : "Confirmar pago";
 
   return (
     <Card>
@@ -259,18 +302,46 @@ function TarjetaPostulacion({
           <ComprobanteLightbox url={p.comprobanteSignedUrl} />
         )}
 
+        {esperandoComprobante && (
+          <p className="rounded-md bg-warning/10 p-2 text-xs text-warning">
+            Aceptado — todavía no sube el comprobante de pago.
+          </p>
+        )}
+
         {p.estado === "rechazado" && p.motivoRechazo && (
           <p className="rounded-md bg-destructive/10 p-2 text-xs text-destructive">
             Motivo: {p.motivoRechazo}
           </p>
         )}
 
-        {accionable && (
+        {necesitaAceptacionPrimero && (
           <div className="flex flex-wrap items-center gap-2 border-t pt-3">
-            <form action={aprobarConIds}>
+            <form action={aceptarConIds}>
               <Button type="submit" size="sm">
                 <CheckCircle2 className="size-4" />
-                Aprobar
+                Aceptar postulante
+              </Button>
+            </form>
+            <form action={rechazarConIds} className="flex items-center gap-2">
+              <Input
+                name="motivo"
+                placeholder="Motivo del rechazo (opcional)"
+                className="h-8 w-56"
+              />
+              <Button type="submit" size="sm" variant="outline">
+                <XCircle className="size-4" />
+                Rechazar
+              </Button>
+            </form>
+          </div>
+        )}
+
+        {!necesitaAceptacionPrimero && puedeResolverDirecto && (
+          <div className="flex flex-wrap items-center gap-2 border-t pt-3">
+            <form action={aprobarConIds}>
+              <Button type="submit" size="sm" disabled={esperandoComprobante}>
+                <CheckCircle2 className="size-4" />
+                {textoAprobar}
               </Button>
             </form>
             <form action={rechazarConIds} className="flex items-center gap-2">
