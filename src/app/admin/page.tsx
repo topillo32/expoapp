@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BotonAlternarActivo } from "./boton-alternar-activo";
+import { BotonAprobarOrganizador } from "./boton-aprobar-organizador";
 import { BotonResetearPassword } from "./boton-resetear-password";
 
 const ETIQUETA_ROL: Record<string, string> = {
@@ -17,6 +18,7 @@ interface PerfilFila {
   nombre: string;
   rol: string;
   activo: boolean;
+  aprobado: boolean;
   creadoEn: string;
   email: string | null;
 }
@@ -26,7 +28,7 @@ export default async function AdminPage() {
 
   const { data: perfiles, error } = await supabase
     .from("perfiles")
-    .select("id, nombre, rol, activo, creadoEn:creado_en")
+    .select("id, nombre, rol, activo, aprobado, creadoEn:creado_en")
     .order("creado_en", { ascending: false });
 
   if (error) {
@@ -48,9 +50,13 @@ export default async function AdminPage() {
     nombre: p.nombre,
     rol: p.rol,
     activo: p.activo,
+    aprobado: p.aprobado,
     creadoEn: p.creadoEn,
     email: emailsPorId.get(p.id) ?? null,
   }));
+
+  const pendientes = filas.filter((f) => f.rol === "organizador" && !f.aprobado);
+  const resto = filas.filter((f) => !(f.rol === "organizador" && !f.aprobado));
 
   return (
     <div>
@@ -70,34 +76,68 @@ export default async function AdminPage() {
         </p>
       )}
 
-      <div className="mt-6 space-y-3">
-        {filas.map((f) => (
-          <Card key={f.id}>
-            <CardHeader>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <CardTitle className="text-base">
-                  {f.nombre}
-                  {f.email && (
-                    <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
-                      {f.email}
-                    </span>
-                  )}
-                </CardTitle>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{ETIQUETA_ROL[f.rol] ?? f.rol}</Badge>
-                  <Badge variant={f.activo ? "success" : "destructive"}>
-                    {f.activo ? "Activa" : "Suspendida"}
-                  </Badge>
+      {pendientes.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-lg font-medium">
+            Organizadores esperando aprobación ({pendientes.length})
+          </h2>
+          <div className="mt-3 space-y-3">
+            {pendientes.map((f) => (
+              <Card key={f.id} className="border-warning/40">
+                <CardHeader>
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <CardTitle className="text-base">
+                      {f.nombre}
+                      {f.email && (
+                        <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
+                          {f.email}
+                        </span>
+                      )}
+                    </CardTitle>
+                    <Badge variant="warning">Pendiente de aprobación</Badge>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex flex-wrap items-center gap-2">
+                  <BotonAprobarOrganizador userId={f.id} />
+                  <BotonAlternarActivo userId={f.id} activo={f.activo} />
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="mt-8">
+        {pendientes.length > 0 && <h2 className="text-lg font-medium">Todas las cuentas</h2>}
+        <div className="mt-3 space-y-3">
+          {resto.map((f) => (
+            <Card key={f.id}>
+              <CardHeader>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <CardTitle className="text-base">
+                    {f.nombre}
+                    {f.email && (
+                      <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
+                        {f.email}
+                      </span>
+                    )}
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">{ETIQUETA_ROL[f.rol] ?? f.rol}</Badge>
+                    <Badge variant={f.activo ? "success" : "destructive"}>
+                      {f.activo ? "Activa" : "Suspendida"}
+                    </Badge>
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-wrap items-center gap-2">
-              <BotonAlternarActivo userId={f.id} activo={f.activo} />
-              {tieneServiceRole && <BotonResetearPassword userId={f.id} />}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardHeader>
+              <CardContent className="flex flex-wrap items-center gap-2">
+                <BotonAlternarActivo userId={f.id} activo={f.activo} />
+                {tieneServiceRole && <BotonResetearPassword userId={f.id} />}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

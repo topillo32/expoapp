@@ -43,6 +43,22 @@ export async function alternarActivo(userId: string, activo: boolean) {
   revalidatePath("/admin");
 }
 
+export async function aprobarOrganizador(userId: string) {
+  const { supabase } = await verificarAdmin();
+
+  const { error } = await supabase
+    .from("perfiles")
+    .update({ aprobado: true })
+    .eq("id", userId)
+    .eq("rol", "organizador");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin");
+}
+
 function generarPasswordTemporal(): string {
   const alfabeto = "ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
   const bytes = crypto.getRandomValues(new Uint8Array(14));
