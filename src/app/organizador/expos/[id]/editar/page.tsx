@@ -22,7 +22,12 @@ interface ExpoParaEditar {
   flyerUrl: string | null;
   requiereAceptacionPago: boolean;
   cuentaTransferenciaId: string | null;
-  recinto: { nombre: string; direccion: string | null; ciudad: string | null } | null;
+  recinto: {
+    nombre: string;
+    direccion: string | null;
+    comuna: string | null;
+    ciudad: string | null;
+  } | null;
   horarios: { fecha: string; horaInicio: string; horaFin: string }[];
   cuposPorTipo: {
     tipoPuesto: "emprendedor" | "comida" | "merchandising";
@@ -63,7 +68,7 @@ export default async function EditarExpoPage({
       flyerUrl:flyer_url,
       requiereAceptacionPago:requiere_aceptacion_pago,
       cuentaTransferenciaId:cuenta_transferencia_id,
-      recinto:recinto_id(nombre, direccion, ciudad),
+      recinto:recinto_id(nombre, direccion, comuna, ciudad),
       horarios:expo_horarios(fecha, horaInicio:hora_inicio, horaFin:hora_fin),
       cuposPorTipo:expo_cupos_tipo(tipoPuesto:tipo_puesto, gratisTotal:gratis_total, cupoGratis:cupo_gratis, precio, maxCupo:max_cupo)
       `,
@@ -106,6 +111,7 @@ export default async function EditarExpoPage({
     cuentaTransferenciaId: expo.cuentaTransferenciaId ?? undefined,
     recintoNombre: expo.recinto?.nombre ?? "",
     recintoDireccion: expo.recinto?.direccion ?? "",
+    recintoComuna: expo.recinto?.comuna ?? "",
     recintoCiudad: expo.recinto?.ciudad ?? "",
     horarios: expo.horarios,
     cuposPorTipo: Object.fromEntries(

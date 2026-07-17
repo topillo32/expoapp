@@ -44,6 +44,7 @@ export async function crearExpo(
     .insert({
       nombre: campos.recintoNombre,
       direccion: campos.recintoDireccion,
+      comuna: campos.recintoComuna,
       ciudad: campos.recintoCiudad,
       creado_por: user.id,
     })

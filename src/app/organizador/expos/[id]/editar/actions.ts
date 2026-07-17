@@ -55,6 +55,7 @@ export async function actualizarExpo(
     .update({
       nombre: campos.recintoNombre,
       direccion: campos.recintoDireccion,
+      comuna: campos.recintoComuna,
       ciudad: campos.recintoCiudad,
     })
     .eq("id", expoActual.recinto_id);

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FiltrosEventos } from "@/components/filtros-eventos";
 import { createClient } from "@/lib/supabase/server";
 import { formatearRangoFechas } from "@/lib/format";
 
@@ -24,36 +25,81 @@ interface ExpoResumen {
   banosGratis: boolean | null;
   tieneLuz: boolean;
   flyerUrl: string | null;
-  recinto: { nombre: string; ciudad: string } | null;
+  recinto: { nombre: string; comuna: string | null; ciudad: string } | null;
 }
 
-export default async function Home() {
+const SELECT_EXPOS_RESUMEN = `
+  id,
+  nombre,
+  descripcion,
+  fechaInicio:fecha_inicio,
+  fechaFin:fecha_fin,
+  tieneEstacionamiento:tiene_estacionamiento,
+  tieneBanos:tiene_banos,
+  banosGratis:banos_gratis,
+  tieneLuz:tiene_luz,
+  flyerUrl:flyer_url,
+  recinto:recinto_id(nombre, comuna, ciudad)
+`;
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ comuna?: string; tipo?: string }>;
+}) {
+  const { comuna: comunaFiltro, tipo: tipoFiltro } = await searchParams;
   const supabase = await createClient();
 
-  const { data: expos, error } = await supabase
+  const { data: recintosPublicados } = await supabase
     .from("expos")
-    .select(
-      `
-      id,
-      nombre,
-      descripcion,
-      fechaInicio:fecha_inicio,
-      fechaFin:fecha_fin,
-      tieneEstacionamiento:tiene_estacionamiento,
-      tieneBanos:tiene_banos,
-      banosGratis:banos_gratis,
-      tieneLuz:tiene_luz,
-      flyerUrl:flyer_url,
-      recinto:recinto_id(nombre, ciudad)
-      `,
-    )
+    .select("recinto:recinto_id(comuna)")
     .eq("estado", "publicada")
-    .order("fecha_inicio")
-    .returns<ExpoResumen[]>();
+    .returns<{ recinto: { comuna: string | null } | null }[]>();
 
-  if (error) {
-    throw error;
+  const comunas = Array.from(
+    new Set(
+      (recintosPublicados ?? [])
+        .map((e) => e.recinto?.comuna?.trim())
+        .filter((c): c is string => Boolean(c)),
+    ),
+  ).sort((a, b) => a.localeCompare(b));
+
+  let idsPorTipo: string[] | null = null;
+  if (tipoFiltro) {
+    const { data: cupos } = await supabase
+      .from("expo_cupos_tipo")
+      .select("expo_id")
+      .eq("tipo_puesto", tipoFiltro);
+    idsPorTipo = (cupos ?? []).map((c) => c.expo_id);
   }
+
+  let expos: ExpoResumen[] = [];
+  if (!tipoFiltro || (idsPorTipo && idsPorTipo.length > 0)) {
+    let query = supabase
+      .from("expos")
+      .select(
+        comunaFiltro
+          ? SELECT_EXPOS_RESUMEN.replace("recinto_id(", "recinto_id!inner(")
+          : SELECT_EXPOS_RESUMEN,
+      )
+      .eq("estado", "publicada")
+      .order("fecha_inicio");
+
+    if (comunaFiltro) {
+      query = query.eq("recinto.comuna", comunaFiltro);
+    }
+    if (idsPorTipo) {
+      query = query.in("id", idsPorTipo);
+    }
+
+    const { data, error } = await query.returns<ExpoResumen[]>();
+    if (error) {
+      throw error;
+    }
+    expos = data ?? [];
+  }
+
+  const hayFiltrosActivos = Boolean(comunaFiltro || tipoFiltro);
 
   return (
     <div className="flex flex-1 flex-col bg-background">
@@ -77,6 +123,11 @@ export default async function Home() {
             Descubre las próximas ferias y eventos, sus fechas y actividades. No
             necesitas iniciar sesión para ver esta información.
           </p>
+          <FiltrosEventos
+            comunas={comunas}
+            comunaSeleccionada={comunaFiltro ?? null}
+            tipoSeleccionado={tipoFiltro ?? null}
+          />
         </div>
       </section>
 
@@ -84,8 +135,9 @@ export default async function Home() {
         {expos.length === 0 ? (
           <div className="rounded-xl border border-dashed py-16 text-center">
             <p className="text-sm text-muted-foreground">
-              Todavía no hay eventos publicados. Vuelve a visitar esta página
-              más adelante.
+              {hayFiltrosActivos
+                ? "Ningún evento publicado coincide con esos filtros."
+                : "Todavía no hay eventos publicados. Vuelve a visitar esta página más adelante."}
             </p>
           </div>
         ) : (
@@ -122,7 +174,10 @@ export default async function Home() {
                       {expo.recinto && (
                         <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
                           <MapPin className="size-3.5 shrink-0" />
-                          {expo.recinto.nombre} · {expo.recinto.ciudad}
+                          {expo.recinto.nombre} ·{" "}
+                          {[expo.recinto.comuna, expo.recinto.ciudad]
+                            .filter(Boolean)
+                            .join(", ")}
                         </p>
                       )}
                     </CardHeader>

@@ -63,9 +63,12 @@ export interface ValoresInicialesExpo {
   publicar: boolean;
   recintoNombre: string;
   recintoDireccion: string;
+  recintoComuna: string;
   recintoCiudad: string;
   horarios: { fecha: string; horaInicio: string; horaFin: string }[];
-  cuposPorTipo: Partial<Record<(typeof TIPOS_PUESTO)[number]["valor"], ValoresCupoTipo>>;
+  cuposPorTipo: Partial<
+    Record<(typeof TIPOS_PUESTO)[number]["valor"], ValoresCupoTipo>
+  >;
   flyerUrl?: string;
   requiereAceptacionPago: boolean;
   cuentaTransferenciaId?: string;
@@ -91,10 +94,22 @@ function CampoFlyer({ flyerUrlActual }: { flyerUrlActual?: string }) {
       <p className="text-xs text-muted-foreground">
         Se muestra en la bandeja pública de ferias y en el detalle del evento.
       </p>
-      <Input id="flyer" name="flyer" type="file" accept="image/*" onChange={manejarCambio} />
+      <Input
+        id="flyer"
+        name="flyer"
+        type="file"
+        accept="image/*"
+        onChange={manejarCambio}
+      />
       {preview ? (
         <div className="relative mt-2 aspect-video w-full max-w-sm overflow-hidden rounded-lg border">
-          <Image src={preview} alt="Previsualización del flyer" fill unoptimized className="object-cover" />
+          <Image
+            src={preview}
+            alt="Previsualización del flyer"
+            fill
+            unoptimized
+            className="object-cover"
+          />
         </div>
       ) : (
         <div className="mt-2 flex aspect-video w-full max-w-sm items-center justify-center gap-2 rounded-lg border border-dashed text-sm text-muted-foreground">
@@ -115,8 +130,12 @@ function CampoTipoPuesto({
   etiqueta: string;
   valoresIniciales?: ValoresCupoTipo;
 }) {
-  const [habilitado, setHabilitado] = useState(valoresIniciales?.habilitado ?? false);
-  const [gratisTotal, setGratisTotal] = useState(valoresIniciales?.gratisTotal ?? false);
+  const [habilitado, setHabilitado] = useState(
+    valoresIniciales?.habilitado ?? false,
+  );
+  const [gratisTotal, setGratisTotal] = useState(
+    valoresIniciales?.gratisTotal ?? false,
+  );
 
   return (
     <div
@@ -174,7 +193,9 @@ function CampoTipoPuesto({
           )}
 
           <div className="space-y-1">
-            <Label className="text-xs">Cupo máximo para este tipo (opcional)</Label>
+            <Label className="text-xs">
+              Cupo máximo para este tipo (opcional)
+            </Label>
             <Input
               name={`maxCupo_${valor}`}
               type="number"
@@ -227,7 +248,10 @@ export function ExpoForm({
   textoBoton = "Crear evento",
   textoEnviando = "Creando...",
 }: {
-  accion: (prevState: EstadoFormExpo, formData: FormData) => Promise<EstadoFormExpo>;
+  accion: (
+    prevState: EstadoFormExpo,
+    formData: FormData,
+  ) => Promise<EstadoFormExpo>;
   valoresIniciales?: ValoresInicialesExpo;
   cuentasDisponibles?: CuentaDisponible[];
   textoBoton?: string;
@@ -239,7 +263,9 @@ export function ExpoForm({
       ? valoresIniciales.horarios.map((h, i) => ({ id: i + 1, ...h }))
       : [{ id: 1, fecha: "", horaInicio: "", horaFin: "" }],
   );
-  const [tieneBanos, setTieneBanos] = useState(valoresIniciales?.tieneBanos ?? false);
+  const [tieneBanos, setTieneBanos] = useState(
+    valoresIniciales?.tieneBanos ?? false,
+  );
   const [requiereAceptacionPago, setRequiereAceptacionPago] = useState(
     valoresIniciales?.requiereAceptacionPago ?? false,
   );
@@ -247,7 +273,12 @@ export function ExpoForm({
   function agregarHorario() {
     setHorarios((prev) => [
       ...prev,
-      { id: (prev.at(-1)?.id ?? 0) + 1, fecha: "", horaInicio: "", horaFin: "" },
+      {
+        id: (prev.at(-1)?.id ?? 0) + 1,
+        fecha: "",
+        horaInicio: "",
+        horaFin: "",
+      },
     ]);
   }
 
@@ -260,7 +291,12 @@ export function ExpoForm({
       <SeccionCard icono={Store} titulo="Datos generales">
         <div className="space-y-2">
           <Label htmlFor="nombre">Nombre del evento</Label>
-          <Input id="nombre" name="nombre" required defaultValue={valoresIniciales?.nombre} />
+          <Input
+            id="nombre"
+            name="nombre"
+            required
+            defaultValue={valoresIniciales?.nombre}
+          />
         </div>
 
         <div className="space-y-2">
@@ -329,13 +365,24 @@ export function ExpoForm({
             defaultValue={valoresIniciales?.recintoDireccion}
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="recintoCiudad">Ciudad</Label>
-          <Input
-            id="recintoCiudad"
-            name="recintoCiudad"
-            defaultValue={valoresIniciales?.recintoCiudad}
-          />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="recintoComuna">Comuna</Label>
+            <Input
+              id="recintoComuna"
+              name="recintoComuna"
+              required
+              defaultValue={valoresIniciales?.recintoComuna}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="recintoCiudad">Ciudad</Label>
+            <Input
+              id="recintoCiudad"
+              name="recintoCiudad"
+              defaultValue={valoresIniciales?.recintoCiudad}
+            />
+          </div>
         </div>
       </SeccionCard>
 
@@ -385,21 +432,33 @@ export function ExpoForm({
         icono={CalendarClock}
         titulo="Horarios por día"
         extra={
-          <Button type="button" variant="outline" size="sm" onClick={agregarHorario}>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={agregarHorario}
+          >
             Agregar día
           </Button>
         }
       >
         <div className="space-y-3">
           {horarios.map((h) => (
-            <div key={h.id} className="grid grid-cols-[1fr_1fr_1fr_auto] items-end gap-2">
+            <div
+              key={h.id}
+              className="grid grid-cols-[1fr_1fr_1fr_auto] items-end gap-2"
+            >
               <div className="space-y-1">
                 <Label className="text-xs">Fecha</Label>
                 <Input type="date" name="horarioFecha" defaultValue={h.fecha} />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Hora inicio</Label>
-                <Input type="time" name="horarioInicio" defaultValue={h.horaInicio} />
+                <Input
+                  type="time"
+                  name="horarioInicio"
+                  defaultValue={h.horaInicio}
+                />
               </div>
               <div className="space-y-1">
                 <Label className="text-xs">Hora fin</Label>
@@ -454,7 +513,9 @@ export function ExpoForm({
 
         {requiereAceptacionPago && (
           <div className="space-y-2 pl-6">
-            <Label className="text-xs">Cuenta de transferencia a usar en este evento</Label>
+            <Label className="text-xs">
+              Cuenta de transferencia a usar en este evento
+            </Label>
             {cuentasDisponibles.length === 0 ? (
               <p className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
                 Todavía no tienes cuentas registradas.{" "}
@@ -466,7 +527,10 @@ export function ExpoForm({
             ) : (
               <Select
                 name="cuentaTransferenciaId"
-                items={cuentasDisponibles.map((c) => ({ label: c.alias, value: c.id }))}
+                items={cuentasDisponibles.map((c) => ({
+                  label: c.alias,
+                  value: c.id,
+                }))}
                 defaultValue={valoresIniciales?.cuentaTransferenciaId}
               >
                 <SelectTrigger className="w-full">

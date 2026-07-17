@@ -37,7 +37,7 @@ interface ExpoDetalle {
   tieneLuz: boolean;
   flyerUrl: string | null;
   organizador: { nombre: string } | null;
-  recinto: { nombre: string; direccion: string; ciudad: string } | null;
+  recinto: { nombre: string; direccion: string; comuna: string | null; ciudad: string } | null;
   horarios: { id: string; fecha: string; horaInicio: string; horaFin: string }[];
   cuposPorTipo: {
     tipoPuesto: string;
@@ -80,7 +80,7 @@ export default async function ExpoDetailPage({
       tieneLuz:tiene_luz,
       flyerUrl:flyer_url,
       organizador:organizador_id(nombre),
-      recinto:recinto_id(nombre, direccion, ciudad),
+      recinto:recinto_id(nombre, direccion, comuna, ciudad),
       horarios:expo_horarios(id, fecha, horaInicio:hora_inicio, horaFin:hora_fin),
       cuposPorTipo:expo_cupos_tipo(tipoPuesto:tipo_puesto, gratisTotal:gratis_total, cupoGratis:cupo_gratis, precio),
       actividades(id, nombre, descripcion, fecha, horaInicio:hora_inicio, horaFin:hora_fin, lugar)
@@ -194,7 +194,9 @@ export default async function ExpoDetailPage({
                       {expo.recinto.nombre}
                     </p>
                     <p>{expo.recinto.direccion}</p>
-                    <p>{expo.recinto.ciudad}</p>
+                    <p>
+                      {[expo.recinto.comuna, expo.recinto.ciudad].filter(Boolean).join(", ")}
+                    </p>
                   </CardContent>
                 </Card>
               )}

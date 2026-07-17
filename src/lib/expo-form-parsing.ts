@@ -13,6 +13,7 @@ export interface CamposExpo {
   publicarAhora: boolean;
   recintoNombre: string;
   recintoDireccion: string;
+  recintoComuna: string;
   recintoCiudad: string;
   requiereAceptacionPago: boolean;
   cuentaTransferenciaId: string | null;
@@ -32,6 +33,7 @@ export function parsearCamposExpo(formData: FormData): CamposExpo {
     publicarAhora: formData.get("publicar") === "on",
     recintoNombre: String(formData.get("recintoNombre") ?? "").trim(),
     recintoDireccion: String(formData.get("recintoDireccion") ?? "").trim(),
+    recintoComuna: String(formData.get("recintoComuna") ?? "").trim(),
     recintoCiudad: String(formData.get("recintoCiudad") ?? "").trim(),
     requiereAceptacionPago: formData.get("requiereAceptacionPago") === "on",
     cuentaTransferenciaId: String(formData.get("cuentaTransferenciaId") ?? "").trim() || null,
