@@ -67,6 +67,26 @@ export default function RegistroPage() {
               </Select>
             </div>
 
+            <label className="flex items-start gap-2 text-sm text-muted-foreground">
+              <input
+                type="checkbox"
+                name="aceptaTerminos"
+                required
+                className="mt-0.5 accent-primary"
+              />
+              <span>
+                Acepto los{" "}
+                <a href="/terminos" target="_blank" className="text-primary underline">
+                  términos y condiciones
+                </a>{" "}
+                y la{" "}
+                <a href="/privacidad" target="_blank" className="text-primary underline">
+                  política de datos
+                </a>
+                .
+              </span>
+            </label>
+
             {estado.error && (
               <p className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
                 {estado.error}

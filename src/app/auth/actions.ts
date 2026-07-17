@@ -16,13 +16,18 @@ export async function registrarse(
   const password = String(formData.get("password") ?? "");
   const nombre = String(formData.get("nombre") ?? "");
   const rol = String(formData.get("rol") ?? "emprendedor") as RolUsuario;
+  const aceptaTerminos = formData.get("aceptaTerminos") === "on";
+
+  if (!aceptaTerminos) {
+    return { error: "Debes aceptar los términos y condiciones para crear una cuenta." };
+  }
 
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { nombre, rol } },
+    options: { data: { nombre, rol, aceptaTerminos: "true" } },
   });
 
   if (error) {
