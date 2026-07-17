@@ -16,8 +16,8 @@ export default function CuentaSuspendidaPage() {
           <p>Tu cuenta fue suspendida por un administrador.</p>
           <p>
             Si crees que esto es un error, escribe a{" "}
-            <a href="mailto:soportebeymatch@gmail.com" className="text-primary underline">
-              soportebeymatch@gmail.com
+            <a href="mailto:soporteferiasync@gmail.com" className="text-primary underline">
+              soporteferiasync@gmail.com
             </a>
             .
           </p>

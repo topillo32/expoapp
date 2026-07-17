@@ -106,8 +106,8 @@ export default function TerminosPage() {
           <h2 className="font-heading text-lg font-semibold">9. Contacto</h2>
           <p className="mt-2 text-muted-foreground">
             Dudas o reclamos:{" "}
-            <a href="mailto:soportebeymatch@gmail.com" className="text-primary underline">
-              soportebeymatch@gmail.com
+            <a href="mailto:soporteferiasync@gmail.com" className="text-primary underline">
+              soporteferiasync@gmail.com
             </a>
             .
           </p>

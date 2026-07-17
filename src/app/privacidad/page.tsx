@@ -65,8 +65,8 @@ export default function PrivacidadPage() {
           <p className="mt-2 text-muted-foreground">
             Puedes pedir acceder a tus datos, corregirlos o solicitar que eliminemos tu cuenta y
             la información asociada, escribiendo a{" "}
-            <a href="mailto:soportebeymatch@gmail.com" className="text-primary underline">
-              soportebeymatch@gmail.com
+            <a href="mailto:soporteferiasync@gmail.com" className="text-primary underline">
+              soporteferiasync@gmail.com
             </a>
             . Algunos datos (por ejemplo, registros de postulaciones ya resueltas) pueden
             conservarse por un tiempo razonable si son necesarios para resolver una disputa entre
