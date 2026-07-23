@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function TarjetaEstadistica({
   icono,
@@ -12,16 +12,18 @@ export function TarjetaEstadistica({
   detalle: string;
 }) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sm font-normal text-muted-foreground">
+    <Card className="card-glow-hover">
+      <CardContent className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm text-muted-foreground">{titulo}</p>
+          <p className="mt-2 font-heading text-3xl font-semibold tracking-tight text-balance">
+            {valor}
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{detalle}</p>
+        </div>
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted/60">
           {icono}
-          {titulo}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="font-heading text-2xl font-semibold tracking-tight">{valor}</p>
-        <p className="mt-1 text-xs text-muted-foreground">{detalle}</p>
+        </div>
       </CardContent>
     </Card>
   );

@@ -21,5 +21,5 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     redirect("/");
   }
 
-  return <div className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">{children}</div>;
+  return <div className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">{children}</div>;
 }

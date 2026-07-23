@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CalendarDays, Landmark } from "lucide-react";
+import { CalendarDays, ClipboardList, Landmark, PlusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TarjetaEstadistica } from "@/components/tarjeta-estadistica";
 import { formatearPrecio } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import type { EstadoPuesto } from "@/lib/types";
@@ -106,26 +108,68 @@ export default async function MisPostulacionesPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-12">
-      <h1 className="font-heading text-3xl font-semibold tracking-tight">
+    <div className="mx-auto w-full max-w-4xl flex-1 px-6 py-12">
+      <h1 className="font-heading text-4xl font-semibold tracking-tight">
         Mis postulaciones
       </h1>
-      <p className="mt-1 text-muted-foreground">
+      <p className="mt-2 text-muted-foreground">
         El estado de todas tus solicitudes a puestos, en cualquier evento.
       </p>
 
       {(postulaciones ?? []).length === 0 ? (
-        <div className="mt-8 rounded-xl border border-dashed py-16 text-center">
-          <p className="text-sm text-muted-foreground">
-            Todavía no te has postulado a ningún evento.
-          </p>
-          <Link href="/" className="mt-2 inline-block text-sm font-medium text-primary underline">
-            Explorar eventos
-          </Link>
+        <div className="relative mt-8 overflow-hidden rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-6 py-20 text-center">
+          <div
+            className="bg-dot-pattern pointer-events-none absolute inset-0 opacity-20"
+            style={{
+              maskImage: "radial-gradient(ellipse at center, black, transparent 70%)",
+            }}
+          />
+          <div className="relative mx-auto flex max-w-md flex-col items-center">
+            <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <ClipboardList className="size-8" />
+            </div>
+            <h3 className="mt-6 font-heading text-2xl font-semibold tracking-tight">
+              Aún no te has postulado a ningún evento
+            </h3>
+            <p className="mt-2 text-muted-foreground">
+              Explora las ferias publicadas y postúlate a un puesto para verlo acá.
+            </p>
+            <Link
+              href="/"
+              className={buttonVariants({
+                size: "lg",
+                className: "mt-6 shadow-lg shadow-primary/25",
+              })}
+            >
+              <PlusCircle className="size-4" />
+              Explorar eventos
+            </Link>
+          </div>
         </div>
       ) : (
         <>
-          <section className="mt-8">
+          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <TarjetaEstadistica
+              icono={<ClipboardList className="size-4 text-warning" />}
+              titulo="Pendientes"
+              valor={String(pendientes.length)}
+              detalle="por revisar"
+            />
+            <TarjetaEstadistica
+              icono={<Landmark className="size-4 text-muted-foreground" />}
+              titulo="Esperando pago"
+              valor={String(esperandoPago.length)}
+              detalle="aceptadas, falta pagar"
+            />
+            <TarjetaEstadistica
+              icono={<CalendarDays className="size-4 text-success" />}
+              titulo="Resueltas"
+              valor={String(resueltas.length)}
+              detalle="aprobadas o rechazadas"
+            />
+          </div>
+
+          <section className="mt-10">
             <h2 className="text-lg font-medium">Pendientes ({pendientes.length})</h2>
             {pendientes.length === 0 ? (
               <p className="mt-2 text-sm text-muted-foreground">
@@ -182,7 +226,7 @@ function TarjetaPostulacion({ p }: { p: PostulacionPropia }) {
   const cuenta = p.expo?.cuentaTransferencia;
 
   return (
-    <Card>
+    <Card className="card-glow-hover">
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>

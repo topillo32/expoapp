@@ -347,86 +347,88 @@ export function ExpoForm({
         <CampoFlyer flyerUrlActual={valoresIniciales?.flyerUrl} />
       </SeccionCard>
 
-      <SeccionCard icono={MapPin} titulo="Recinto">
-        <div className="space-y-2">
-          <Label htmlFor="recintoNombre">Nombre del recinto</Label>
-          <Input
-            id="recintoNombre"
-            name="recintoNombre"
-            required
-            defaultValue={valoresIniciales?.recintoNombre}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="recintoDireccion">Dirección</Label>
-          <Input
-            id="recintoDireccion"
-            name="recintoDireccion"
-            defaultValue={valoresIniciales?.recintoDireccion}
-          />
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        <SeccionCard icono={MapPin} titulo="Recinto">
           <div className="space-y-2">
-            <Label htmlFor="recintoComuna">Comuna</Label>
+            <Label htmlFor="recintoNombre">Nombre del recinto</Label>
             <Input
-              id="recintoComuna"
-              name="recintoComuna"
+              id="recintoNombre"
+              name="recintoNombre"
               required
-              defaultValue={valoresIniciales?.recintoComuna}
+              defaultValue={valoresIniciales?.recintoNombre}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="recintoCiudad">Ciudad</Label>
+            <Label htmlFor="recintoDireccion">Dirección</Label>
             <Input
-              id="recintoCiudad"
-              name="recintoCiudad"
-              defaultValue={valoresIniciales?.recintoCiudad}
+              id="recintoDireccion"
+              name="recintoDireccion"
+              defaultValue={valoresIniciales?.recintoDireccion}
             />
           </div>
-        </div>
-      </SeccionCard>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="recintoComuna">Comuna</Label>
+              <Input
+                id="recintoComuna"
+                name="recintoComuna"
+                required
+                defaultValue={valoresIniciales?.recintoComuna}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="recintoCiudad">Ciudad</Label>
+              <Input
+                id="recintoCiudad"
+                name="recintoCiudad"
+                defaultValue={valoresIniciales?.recintoCiudad}
+              />
+            </div>
+          </div>
+        </SeccionCard>
 
-      <SeccionCard icono={ListChecks} titulo="Servicios">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="tieneEstacionamiento"
-            className="accent-primary"
-            defaultChecked={valoresIniciales?.tieneEstacionamiento}
-          />
-          Tiene estacionamiento
-        </label>
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="tieneBanos"
-            className="accent-primary"
-            checked={tieneBanos}
-            onChange={(e) => setTieneBanos(e.target.checked)}
-          />
-          Tiene baños
-        </label>
-        {tieneBanos && (
-          <label className="ml-6 flex items-center gap-2 text-sm">
+        <SeccionCard icono={ListChecks} titulo="Servicios">
+          <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
-              name="banosGratis"
+              name="tieneEstacionamiento"
               className="accent-primary"
-              defaultChecked={valoresIniciales?.banosGratis}
+              defaultChecked={valoresIniciales?.tieneEstacionamiento}
             />
-            Los baños son gratis
+            Tiene estacionamiento
           </label>
-        )}
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="tieneLuz"
-            className="accent-primary"
-            defaultChecked={valoresIniciales?.tieneLuz}
-          />
-          Tiene luz eléctrica para los puestos
-        </label>
-      </SeccionCard>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="tieneBanos"
+              className="accent-primary"
+              checked={tieneBanos}
+              onChange={(e) => setTieneBanos(e.target.checked)}
+            />
+            Tiene baños
+          </label>
+          {tieneBanos && (
+            <label className="ml-6 flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="banosGratis"
+                className="accent-primary"
+                defaultChecked={valoresIniciales?.banosGratis}
+              />
+              Los baños son gratis
+            </label>
+          )}
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="tieneLuz"
+              className="accent-primary"
+              defaultChecked={valoresIniciales?.tieneLuz}
+            />
+            Tiene luz eléctrica para los puestos
+          </label>
+        </SeccionCard>
+      </div>
 
       <SeccionCard
         icono={CalendarClock}
@@ -495,71 +497,73 @@ export function ExpoForm({
         </div>
       </SeccionCard>
 
-      <SeccionCard
-        icono={Banknote}
-        titulo="Pagos"
-        descripcion="Opcional: exige aceptar manualmente a cada postulante de un puesto pago antes de que vea los datos de transferencia y suba el comprobante."
-      >
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="requiereAceptacionPago"
-            className="accent-primary"
-            checked={requiereAceptacionPago}
-            onChange={(e) => setRequiereAceptacionPago(e.target.checked)}
-          />
-          Requiere aceptar postulantes antes del pago
-        </label>
+      <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
+        <SeccionCard
+          icono={Banknote}
+          titulo="Pagos"
+          descripcion="Opcional: exige aceptar manualmente a cada postulante de un puesto pago antes de que vea los datos de transferencia y suba el comprobante."
+        >
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="requiereAceptacionPago"
+              className="accent-primary"
+              checked={requiereAceptacionPago}
+              onChange={(e) => setRequiereAceptacionPago(e.target.checked)}
+            />
+            Requiere aceptar postulantes antes del pago
+          </label>
 
-        {requiereAceptacionPago && (
-          <div className="space-y-2 pl-6">
-            <Label className="text-xs">
-              Cuenta de transferencia a usar en este evento
-            </Label>
-            {cuentasDisponibles.length === 0 ? (
-              <p className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
-                Todavía no tienes cuentas registradas.{" "}
-                <Link href="/organizador/cuentas/nueva" className="underline">
-                  Crea una primero
-                </Link>
-                .
-              </p>
-            ) : (
-              <Select
-                name="cuentaTransferenciaId"
-                items={cuentasDisponibles.map((c) => ({
-                  label: c.alias,
-                  value: c.id,
-                }))}
-                defaultValue={valoresIniciales?.cuentaTransferenciaId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Elige una cuenta" />
-                </SelectTrigger>
-                <SelectContent>
-                  {cuentasDisponibles.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.alias}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          </div>
-        )}
-      </SeccionCard>
+          {requiereAceptacionPago && (
+            <div className="space-y-2 pl-6">
+              <Label className="text-xs">
+                Cuenta de transferencia a usar en este evento
+              </Label>
+              {cuentasDisponibles.length === 0 ? (
+                <p className="rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
+                  Todavía no tienes cuentas registradas.{" "}
+                  <Link href="/organizador/cuentas/nueva" className="underline">
+                    Crea una primero
+                  </Link>
+                  .
+                </p>
+              ) : (
+                <Select
+                  name="cuentaTransferenciaId"
+                  items={cuentasDisponibles.map((c) => ({
+                    label: c.alias,
+                    value: c.id,
+                  }))}
+                  defaultValue={valoresIniciales?.cuentaTransferenciaId}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Elige una cuenta" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cuentasDisponibles.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.alias}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+          )}
+        </SeccionCard>
 
-      <SeccionCard icono={Landmark} titulo="Publicación">
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="publicar"
-            className="accent-primary"
-            defaultChecked={valoresIniciales?.publicar}
-          />
-          Publicar este evento (si no, queda como borrador)
-        </label>
-      </SeccionCard>
+        <SeccionCard icono={Landmark} titulo="Publicación">
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              name="publicar"
+              className="accent-primary"
+              defaultChecked={valoresIniciales?.publicar}
+            />
+            Publicar este evento (si no, queda como borrador)
+          </label>
+        </SeccionCard>
+      </div>
 
       {estado.error && (
         <p className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
@@ -567,7 +571,12 @@ export function ExpoForm({
         </p>
       )}
 
-      <Button type="submit" disabled={enviando} size="lg">
+      <Button
+        type="submit"
+        disabled={enviando}
+        size="lg"
+        className="shadow-lg shadow-primary/25"
+      >
         {enviando ? textoEnviando : textoBoton}
       </Button>
     </form>

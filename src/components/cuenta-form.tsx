@@ -149,7 +149,7 @@ export function CuentaForm({
         </p>
       )}
 
-      <Button type="submit" disabled={enviando}>
+      <Button type="submit" size="lg" className="shadow-lg shadow-primary/25" disabled={enviando}>
         {enviando ? textoEnviando : textoBoton}
       </Button>
     </form>

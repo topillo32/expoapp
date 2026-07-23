@@ -4,8 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CuentaSuspendidaPage() {
   return (
-    <div className="flex flex-1 items-center justify-center bg-background px-6 py-12">
-      <Card className="w-full max-w-sm shadow-lg">
+    <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-background bg-radial-glow px-6 py-12">
+      <div
+        className="bg-dot-pattern pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          maskImage: "radial-gradient(ellipse at top left, black, transparent 65%)",
+        }}
+      />
+      <Card className="relative w-full max-w-sm shadow-xl shadow-black/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <ShieldAlert className="size-5 text-destructive" />

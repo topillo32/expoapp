@@ -44,7 +44,7 @@ export function FiltrosEventos({
     <div className="mt-6 flex flex-wrap items-center gap-2">
       <Select
         items={comunas.map((c) => ({ label: c, value: c }))}
-        value={comunaSeleccionada ?? undefined}
+        value={comunaSeleccionada}
         onValueChange={(v) =>
           actualizarFiltro("comuna", typeof v === "string" ? v : null)
         }
@@ -63,7 +63,7 @@ export function FiltrosEventos({
 
       <Select
         items={TIPOS.map((t) => ({ label: t.etiqueta, value: t.valor }))}
-        value={tipoSeleccionado ?? undefined}
+        value={tipoSeleccionado}
         onValueChange={(v) =>
           actualizarFiltro("tipo", typeof v === "string" ? v : null)
         }

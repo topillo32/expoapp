@@ -16,7 +16,7 @@ export default async function NuevaExpoPage() {
     .order("creado_en", { ascending: false });
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-4xl">
       <Breadcrumbs items={[{ label: "Nuevo evento" }]} />
       <h1 className="font-heading text-3xl font-semibold tracking-tight">Crear evento</h1>
       <p className="mt-1 text-muted-foreground">

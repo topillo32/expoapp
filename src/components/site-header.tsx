@@ -1,7 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, KeyRound, LayoutDashboard, ShieldCheck } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Bell, ChevronDown, KeyRound, LayoutDashboard, LogOut, ShieldCheck } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { createClient } from "@/lib/supabase/server";
 import { cerrarSesion } from "@/app/auth/actions";
 
@@ -12,14 +20,16 @@ export async function SiteHeader() {
   } = await supabase.auth.getUser();
 
   let rol: string | null = null;
+  let nombre: string | null = null;
   let novedades = 0;
   if (user) {
     const { data: perfil } = await supabase
       .from("perfiles")
-      .select("rol")
+      .select("rol, nombre")
       .eq("id", user.id)
       .maybeSingle();
     rol = perfil?.rol ?? null;
+    nombre = perfil?.nombre ?? null;
 
     if (rol === "emprendedor") {
       const { count } = await supabase
@@ -103,21 +113,49 @@ export async function SiteHeader() {
           )}
 
           {user && (
-            <Link
-              href="/cuenta"
-              className="group/nav flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted-foreground hover:bg-white/5 hover:text-foreground"
-              title="Cambiar contraseña"
-            >
-              <KeyRound className="size-4 transition-colors duration-200 group-hover/nav:text-primary" />
-            </Link>
-          )}
+            <>
+              <div className="mx-1.5 h-5 w-px shrink-0 bg-white/10" />
 
-          {user && (
-            <form action={cerrarSesion} className="ml-1">
-              <Button type="submit" variant="outline" size="sm">
-                Cerrar sesión
-              </Button>
-            </form>
+              <DropdownMenu>
+                <DropdownMenuTrigger
+                  className="group/user flex items-center gap-2 rounded-full py-1 pr-2 pl-1 text-muted-foreground outline-none hover:bg-white/5 hover:text-foreground aria-expanded:bg-white/5 aria-expanded:text-foreground"
+                >
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                    {(nombre ?? user.email ?? "?").charAt(0).toUpperCase()}
+                  </span>
+                  <span className="hidden max-w-32 truncate text-sm font-medium text-foreground sm:inline">
+                    {nombre ?? user.email}
+                  </span>
+                  <ChevronDown className="hidden size-3.5 shrink-0 text-muted-foreground transition-transform duration-200 group-aria-expanded/user:rotate-180 sm:block" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>
+                    <p className="truncate text-sm font-medium text-foreground">
+                      {nombre ?? "Mi cuenta"}
+                    </p>
+                    {user.email && (
+                      <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                    )}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem render={<Link href="/cuenta" />}>
+                    <KeyRound />
+                    Cambiar contraseña
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <form action={cerrarSesion}>
+                    <DropdownMenuItem
+                      variant="destructive"
+                      nativeButton
+                      render={<button type="submit" />}
+                    >
+                      <LogOut />
+                      Cerrar sesión
+                    </DropdownMenuItem>
+                  </form>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           )}
         </nav>
       </div>

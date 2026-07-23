@@ -16,7 +16,7 @@ export default async function CuentaPage() {
 
   return (
     <div className="mx-auto w-full max-w-sm flex-1 px-6 py-12">
-      <Card>
+      <Card className="shadow-xl shadow-black/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
             <KeyRound className="size-5 text-primary" />

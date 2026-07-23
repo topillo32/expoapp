@@ -1,6 +1,7 @@
-import { Users } from "lucide-react";
+import { Clock3, ShieldCheck, Store, UserCheck, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { TarjetaEstadistica } from "@/components/tarjeta-estadistica";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BotonAlternarActivo } from "./boton-alternar-activo";
@@ -57,16 +58,21 @@ export default async function AdminPage() {
 
   const pendientes = filas.filter((f) => f.rol === "organizador" && !f.aprobado);
   const resto = filas.filter((f) => !(f.rol === "organizador" && !f.aprobado));
+  const organizadores = filas.filter((f) => f.rol === "organizador").length;
+  const emprendedores = filas.filter((f) => f.rol === "emprendedor").length;
+  const suspendidas = filas.filter((f) => !f.activo).length;
 
   return (
     <div>
-      <h1 className="flex items-center gap-2 font-heading text-3xl font-semibold tracking-tight">
-        <Users className="size-7 text-primary" />
-        Cuentas de usuarios
-      </h1>
-      <p className="mt-1 text-muted-foreground">
-        {filas.length} cuenta{filas.length === 1 ? "" : "s"} registrada{filas.length === 1 ? "" : "s"}.
-      </p>
+      <div>
+        <h1 className="flex items-center gap-2 font-heading text-4xl font-semibold tracking-tight">
+          <Users className="size-8 text-primary" />
+          Cuentas de usuarios
+        </h1>
+        <p className="mt-2 text-muted-foreground">
+          Administra el acceso de organizadores y emprendedores a la plataforma.
+        </p>
+      </div>
 
       {!tieneServiceRole && (
         <p className="mt-4 rounded-lg border border-warning/30 bg-warning/10 p-3 text-sm text-warning">
@@ -76,23 +82,56 @@ export default async function AdminPage() {
         </p>
       )}
 
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <TarjetaEstadistica
+          icono={<Users className="size-4 text-primary" />}
+          titulo="Cuentas totales"
+          valor={String(filas.length)}
+          detalle="registradas en la plataforma"
+        />
+        <TarjetaEstadistica
+          icono={<Store className="size-4 text-muted-foreground" />}
+          titulo="Organizadores"
+          valor={String(organizadores)}
+          detalle={`${emprendedores} emprendedor(es)`}
+        />
+        <TarjetaEstadistica
+          icono={<Clock3 className="size-4 text-warning" />}
+          titulo="Pendientes de aprobación"
+          valor={String(pendientes.length)}
+          detalle="organizadores esperando"
+        />
+        <TarjetaEstadistica
+          icono={<UserCheck className="size-4 text-muted-foreground" />}
+          titulo="Suspendidas"
+          valor={String(suspendidas)}
+          detalle="cuentas sin acceso"
+        />
+      </div>
+
       {pendientes.length > 0 && (
-        <section className="mt-8">
-          <h2 className="text-lg font-medium">
-            Organizadores esperando aprobación ({pendientes.length})
+        <section className="mt-10">
+          <h2 className="flex items-center gap-2 text-lg font-medium">
+            Organizadores esperando aprobación
+            <Badge variant="warning">{pendientes.length}</Badge>
           </h2>
-          <div className="mt-3 space-y-3">
+          <div className="mt-4 space-y-3">
             {pendientes.map((f) => (
-              <Card key={f.id} className="border-warning/40">
+              <Card key={f.id} className="card-glow-hover border-warning/40">
                 <CardHeader>
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <CardTitle className="text-base">
-                      {f.nombre}
-                      {f.email && (
-                        <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
-                          {f.email}
-                        </span>
-                      )}
+                    <CardTitle className="flex items-center gap-3 text-base">
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-warning/15 text-sm font-semibold text-warning">
+                        {f.nombre.charAt(0).toUpperCase()}
+                      </span>
+                      <span>
+                        {f.nombre}
+                        {f.email && (
+                          <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
+                            {f.email}
+                          </span>
+                        )}
+                      </span>
                     </CardTitle>
                     <Badge variant="warning">Pendiente de aprobación</Badge>
                   </div>
@@ -107,22 +146,30 @@ export default async function AdminPage() {
         </section>
       )}
 
-      <section className="mt-8">
-        {pendientes.length > 0 && <h2 className="text-lg font-medium">Todas las cuentas</h2>}
-        <div className="mt-3 space-y-3">
+      <section className="mt-10">
+        <h2 className="text-lg font-medium">
+          {pendientes.length > 0 ? "Todas las cuentas" : "Cuentas"}
+        </h2>
+        <div className="mt-4 space-y-3">
           {resto.map((f) => (
-            <Card key={f.id}>
+            <Card key={f.id} className="card-glow-hover">
               <CardHeader>
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <CardTitle className="text-base">
-                    {f.nombre}
-                    {f.email && (
-                      <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
-                        {f.email}
-                      </span>
-                    )}
+                  <CardTitle className="flex items-center gap-3 text-base">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted/60 text-sm font-semibold text-foreground">
+                      {f.nombre.charAt(0).toUpperCase()}
+                    </span>
+                    <span>
+                      {f.nombre}
+                      {f.email && (
+                        <span className="ml-2 font-sans text-sm font-normal text-muted-foreground">
+                          {f.email}
+                        </span>
+                      )}
+                    </span>
                   </CardTitle>
                   <div className="flex items-center gap-2">
+                    {f.rol === "admin" && <ShieldCheck className="size-4 text-primary" />}
                     <Badge variant="outline">{ETIQUETA_ROL[f.rol] ?? f.rol}</Badge>
                     <Badge variant={f.activo ? "success" : "destructive"}>
                       {f.activo ? "Activa" : "Suspendida"}

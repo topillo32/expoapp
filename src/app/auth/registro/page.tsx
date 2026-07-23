@@ -20,8 +20,14 @@ export default function RegistroPage() {
   const [estado, formAction, enviando] = useActionState(registrarse, estadoInicial);
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-background px-6 py-12">
-      <Card className="w-full max-w-sm shadow-lg">
+    <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-background bg-radial-glow px-6 py-12">
+      <div
+        className="bg-dot-pattern pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          maskImage: "radial-gradient(ellipse at top left, black, transparent 65%)",
+        }}
+      />
+      <Card className="relative w-full max-w-sm shadow-xl shadow-black/20">
         <CardHeader>
           <h1 className="font-heading text-2xl font-semibold tracking-tight">
             Crear cuenta
@@ -93,7 +99,12 @@ export default function RegistroPage() {
               </p>
             )}
 
-            <Button type="submit" className="w-full" disabled={enviando}>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full shadow-lg shadow-primary/25"
+              disabled={enviando}
+            >
               {enviando ? "Creando cuenta..." : "Crear cuenta"}
             </Button>
 

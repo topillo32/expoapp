@@ -131,7 +131,7 @@ export default async function EditarExpoPage({
   const accion = actualizarExpo.bind(null, expo.id);
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-4xl">
       <Breadcrumbs items={[{ label: expo.nombre }]} />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

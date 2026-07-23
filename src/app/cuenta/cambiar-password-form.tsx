@@ -37,7 +37,7 @@ export function CambiarPasswordForm() {
         </p>
       )}
 
-      <Button type="submit" disabled={enviando}>
+      <Button type="submit" size="lg" className="shadow-lg shadow-primary/25" disabled={enviando}>
         {enviando ? "Guardando..." : "Cambiar contraseña"}
       </Button>
     </form>

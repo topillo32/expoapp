@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
-import { Car, CheckCircle2, User, XCircle, Zap } from "lucide-react";
+import { Car, CheckCircle2, Clock3, ThumbsUp, User, Wallet, XCircle, Zap } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { TarjetaEstadistica } from "@/components/tarjeta-estadistica";
 import { formatearPrecio } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { ETIQUETA_CATEGORIA, type CategoriaPuesto, type EstadoPuesto } from "@/lib/types";
@@ -123,6 +124,7 @@ export default async function PostulacionesPage({
   const resueltas = conComprobante.filter(
     (p) => p.estado === "aprobado" || p.estado === "rechazado" || p.estado === "cancelado",
   );
+  const aprobadas = conComprobante.filter((p) => p.estado === "aprobado");
 
   return (
     <div>
@@ -133,10 +135,10 @@ export default async function PostulacionesPage({
         ]}
       />
       <div>
-        <h1 className="font-heading text-3xl font-semibold tracking-tight">
+        <h1 className="font-heading text-4xl font-semibold tracking-tight">
           Postulaciones a {expo.nombre}
         </h1>
-        <p className="mt-1 text-muted-foreground">
+        <p className="mt-2 text-muted-foreground">
           Revisa, aprueba o rechaza las solicitudes de puestos.
         </p>
       </div>
@@ -147,7 +149,30 @@ export default async function PostulacionesPage({
         </p>
       )}
 
-      <section className="mt-8">
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <TarjetaEstadistica
+          icono={<Clock3 className="size-4 text-warning" />}
+          titulo="Pendientes"
+          valor={String(pendientes.length)}
+          detalle="por revisar"
+        />
+        {expo.requiereAceptacionPago && (
+          <TarjetaEstadistica
+            icono={<Wallet className="size-4 text-muted-foreground" />}
+            titulo="Esperando pago"
+            valor={String(esperandoPago.length)}
+            detalle="postulantes aceptados"
+          />
+        )}
+        <TarjetaEstadistica
+          icono={<ThumbsUp className="size-4 text-success" />}
+          titulo="Aprobadas"
+          valor={String(aprobadas.length)}
+          detalle={`de ${conComprobante.length} solicitud(es)`}
+        />
+      </div>
+
+      <section className="mt-10">
         <h2 className="text-lg font-medium">
           Pendientes de revisión ({pendientes.length})
         </h2>
@@ -234,7 +259,7 @@ function TarjetaPostulacion({
   const textoAprobar = p.esGratis ? "Aprobar" : "Confirmar pago";
 
   return (
-    <Card>
+    <Card className="card-glow-hover">
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-base">

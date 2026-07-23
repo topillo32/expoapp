@@ -327,7 +327,10 @@ export default async function ExpoDetailPage({
                 </div>
                 <Link
                   href={hrefPostular}
-                  className={buttonVariants({ className: "w-full" })}
+                  className={buttonVariants({
+                    size: "lg",
+                    className: "w-full shadow-lg shadow-primary/25",
+                  })}
                 >
                   Postularme
                 </Link>
