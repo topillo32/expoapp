@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ClipboardList, MapPin } from "lucide-react";
+import { ClipboardList, MapPin, Wallet } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ExpoForm, type ValoresInicialesExpo } from "@/components/expo-form";
 import { buttonVariants } from "@/components/ui/button";
@@ -156,6 +156,13 @@ export default async function EditarExpoPage({
           >
             <MapPin className="size-4" />
             Plano de puestos
+          </Link>
+          <Link
+            href={`/organizador/expos/${expo.id}/contabilidad`}
+            className={buttonVariants({ variant: "outline" })}
+          >
+            <Wallet className="size-4" />
+            Contabilidad
           </Link>
         </div>
       </div>

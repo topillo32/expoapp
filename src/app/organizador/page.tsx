@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, Landmark, PlusCircle } from "lucide-react";
+import { CalendarDays, Landmark, PlusCircle, Wallet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,6 +47,13 @@ export default async function OrganizadorDashboardPage() {
           </p>
         </div>
         <div className="flex shrink-0 gap-2">
+          <Link
+            href="/organizador/contabilidad"
+            className={buttonVariants({ variant: "outline" })}
+          >
+            <Wallet className="size-4" />
+            Contabilidad
+          </Link>
           <Link
             href="/organizador/cuentas"
             className={buttonVariants({ variant: "outline" })}
