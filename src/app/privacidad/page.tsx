@@ -43,9 +43,10 @@ export default function PrivacidadPage() {
         <section>
           <h2 className="font-heading text-lg font-semibold">Dónde se guardan</h2>
           <p className="mt-2 text-muted-foreground">
-            Los datos se almacenan en Supabase, el proveedor de base de datos que usa FeriaSync
-            para operar. Es infraestructura, no un tercero con acceso a usar tus datos por su
-            cuenta — es equivalente a que un negocio guarde sus archivos en un servidor.
+            Los datos se almacenan en una base de datos administrada por un proveedor de
+            infraestructura que usa FeriaSync para operar. Es infraestructura, no un tercero con
+            acceso a usar tus datos por su cuenta — es equivalente a que un negocio guarde sus
+            archivos en un servidor.
           </p>
         </section>
 

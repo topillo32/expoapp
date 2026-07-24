@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { Car, CheckCircle2, Clock3, ThumbsUp, User, Wallet, XCircle, Zap } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Badge } from "@/components/ui/badge";
+import { BotonDescargarCsv } from "@/components/boton-descargar-csv";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,7 +10,7 @@ import { TarjetaEstadistica } from "@/components/tarjeta-estadistica";
 import { formatearPrecio } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { ETIQUETA_CATEGORIA, type CategoriaPuesto, type EstadoPuesto } from "@/lib/types";
-import { aceptarPostulante, aprobarPuesto, rechazarPuesto } from "./actions";
+import { aceptarPostulante, aprobarPuesto, exportarPostulacionesExpo, rechazarPuesto } from "./actions";
 import { ComprobanteLightbox } from "./comprobante-lightbox";
 
 const ETIQUETA_TIPO: Record<string, string> = {
@@ -125,6 +126,7 @@ export default async function PostulacionesPage({
     (p) => p.estado === "aprobado" || p.estado === "rechazado" || p.estado === "cancelado",
   );
   const aprobadas = conComprobante.filter((p) => p.estado === "aprobado");
+  const exportarConId = exportarPostulacionesExpo.bind(null, expo.id);
 
   return (
     <div>
@@ -134,13 +136,19 @@ export default async function PostulacionesPage({
           { label: "Postulaciones" },
         ]}
       />
-      <div>
-        <h1 className="font-heading text-4xl font-semibold tracking-tight">
-          Postulaciones a {expo.nombre}
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          Revisa, aprueba o rechaza las solicitudes de puestos.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-heading text-4xl font-semibold tracking-tight">
+            Postulaciones a {expo.nombre}
+          </h1>
+          <p className="mt-2 text-muted-foreground">
+            Revisa, aprueba o rechaza las solicitudes de puestos.
+          </p>
+        </div>
+        <BotonDescargarCsv
+          accion={exportarConId}
+          nombreArchivo={`postulaciones-${expo.nombre.toLowerCase().replace(/\s+/g, "-")}.csv`}
+        />
       </div>
 
       {errorQuery && (
