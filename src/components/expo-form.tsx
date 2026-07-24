@@ -14,6 +14,8 @@ import {
   Ticket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CampoCiudad } from "@/components/campo-ciudad";
+import { CampoComuna } from "@/components/campo-comuna";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -369,7 +371,7 @@ export function ExpoForm({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="recintoComuna">Comuna</Label>
-              <Input
+              <CampoComuna
                 id="recintoComuna"
                 name="recintoComuna"
                 required
@@ -378,7 +380,7 @@ export function ExpoForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="recintoCiudad">Ciudad</Label>
-              <Input
+              <CampoCiudad
                 id="recintoCiudad"
                 name="recintoCiudad"
                 defaultValue={valoresIniciales?.recintoCiudad}
