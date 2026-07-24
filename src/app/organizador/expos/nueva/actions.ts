@@ -23,6 +23,16 @@ export async function crearExpo(
     redirect("/auth/login");
   }
 
+  const { data: perfil } = await supabase
+    .from("perfiles")
+    .select("rol, aprobado")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (perfil?.rol !== "organizador" || !perfil.aprobado) {
+    return { error: "Tu cuenta de organizador todavía no fue aprobada por un administrador." };
+  }
+
   const campos = parsearCamposExpo(formData);
 
   if (

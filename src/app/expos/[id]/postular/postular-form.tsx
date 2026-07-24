@@ -243,7 +243,6 @@ export function PostularForm({
                 width={1200}
                 height={800}
                 className="h-auto w-full"
-                unoptimized
               />
               {ubicacionesFiltradas.map((u) => {
                 const estadoPin = u.ocupado

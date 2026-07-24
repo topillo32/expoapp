@@ -22,6 +22,11 @@ export function CambiarPasswordForm() {
   return (
     <form action={formAction} className="space-y-4">
       <div className="space-y-2">
+        <Label htmlFor="actual">Contraseña actual</Label>
+        <Input id="actual" name="actual" type="password" required />
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="nueva">Contraseña nueva</Label>
         <Input id="nueva" name="nueva" type="password" minLength={6} required />
       </div>

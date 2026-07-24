@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ExpoSubNav } from "@/components/expo-subnav";
 import { Badge } from "@/components/ui/badge";
 import { BotonDescargarCsv } from "@/components/boton-descargar-csv";
-import { Button } from "@/components/ui/button";
+import { BotonSubmit } from "@/components/boton-submit";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TarjetaEstadistica } from "@/components/tarjeta-estadistica";
@@ -355,10 +355,10 @@ function TarjetaPostulacion({
         {necesitaAceptacionPrimero && (
           <div className="flex flex-wrap items-center gap-2 border-t pt-3">
             <form action={aceptarConIds}>
-              <Button type="submit" size="sm">
+              <BotonSubmit size="sm" textoEnviando="Aceptando...">
                 <CheckCircle2 className="size-4" />
                 Aceptar postulante
-              </Button>
+              </BotonSubmit>
             </form>
             <form action={rechazarConIds} className="flex items-center gap-2">
               <Input
@@ -366,10 +366,10 @@ function TarjetaPostulacion({
                 placeholder="Motivo del rechazo (opcional)"
                 className="h-8 w-56"
               />
-              <Button type="submit" size="sm" variant="outline">
+              <BotonSubmit size="sm" variant="outline" textoEnviando="Rechazando...">
                 <XCircle className="size-4" />
                 Rechazar
-              </Button>
+              </BotonSubmit>
             </form>
           </div>
         )}
@@ -377,10 +377,10 @@ function TarjetaPostulacion({
         {!necesitaAceptacionPrimero && puedeResolverDirecto && (
           <div className="flex flex-wrap items-center gap-2 border-t pt-3">
             <form action={aprobarConIds}>
-              <Button type="submit" size="sm" disabled={esperandoComprobante}>
+              <BotonSubmit size="sm" disabled={esperandoComprobante} textoEnviando="Guardando...">
                 <CheckCircle2 className="size-4" />
                 {textoAprobar}
-              </Button>
+              </BotonSubmit>
             </form>
             <form action={rechazarConIds} className="flex items-center gap-2">
               <Input
@@ -388,10 +388,10 @@ function TarjetaPostulacion({
                 placeholder="Motivo del rechazo (opcional)"
                 className="h-8 w-56"
               />
-              <Button type="submit" size="sm" variant="outline">
+              <BotonSubmit size="sm" variant="outline" textoEnviando="Rechazando...">
                 <XCircle className="size-4" />
                 Rechazar
-              </Button>
+              </BotonSubmit>
             </form>
           </div>
         )}

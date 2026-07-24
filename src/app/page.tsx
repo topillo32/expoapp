@@ -157,7 +157,6 @@ export default async function Home({
                           src={expo.flyerUrl}
                           alt={`Flyer de ${expo.nombre}`}
                           fill
-                          unoptimized
                           className="object-cover"
                         />
                       </div>

@@ -14,7 +14,7 @@ export function FlyerLightbox({ url, alt }: { url: string; alt: string }) {
         onClick={() => setAbierto(true)}
         className="relative mt-4 aspect-[21/9] w-full cursor-zoom-in overflow-hidden rounded-xl border"
       >
-        <Image src={url} alt={alt} fill unoptimized className="object-cover" />
+        <Image src={url} alt={alt} fill className="object-cover" />
       </button>
 
       {abierto && (

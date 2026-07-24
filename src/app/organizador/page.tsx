@@ -193,7 +193,6 @@ export default async function OrganizadorDashboardPage() {
                         src={expo.flyerUrl}
                         alt=""
                         fill
-                        unoptimized
                         className="object-cover"
                       />
                     ) : (

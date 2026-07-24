@@ -1,5 +1,11 @@
 function escaparCampoCsv(valor: string | number): string {
-  const texto = String(valor);
+  let texto = String(valor);
+  // Un campo que empieza con =, +, -, @ puede interpretarse como formula al
+  // abrir el CSV en Excel/Sheets (ej. un nombre de tienda "=cmd|...").
+  // Anteponer una comilla simple lo fuerza a texto plano.
+  if (/^[=+\-@]/.test(texto)) {
+    texto = `'${texto}`;
+  }
   if (/[",\n]/.test(texto)) {
     return `"${texto.replace(/"/g, '""')}"`;
   }

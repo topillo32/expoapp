@@ -6,11 +6,11 @@ import {
   KeyRound,
   Landmark,
   LayoutDashboard,
-  LogOut,
   ShieldCheck,
   Wallet,
 } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { ItemCerrarSesion } from "@/components/item-cerrar-sesion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -167,14 +167,7 @@ export async function SiteHeader() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <form action={cerrarSesion}>
-                    <DropdownMenuItem
-                      variant="destructive"
-                      nativeButton
-                      render={<button type="submit" />}
-                    >
-                      <LogOut />
-                      Cerrar sesión
-                    </DropdownMenuItem>
+                    <ItemCerrarSesion />
                   </form>
                 </DropdownMenuContent>
               </DropdownMenu>

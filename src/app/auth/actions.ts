@@ -15,7 +15,11 @@ export async function registrarse(
   const email = String(formData.get("email") ?? "");
   const password = String(formData.get("password") ?? "");
   const nombre = String(formData.get("nombre") ?? "");
-  const rol = String(formData.get("rol") ?? "emprendedor") as RolUsuario;
+  // Whitelist explícito: el registro público nunca puede crear cuentas admin,
+  // sin importar qué mande el cliente en este campo.
+  const rolSolicitado = formData.get("rol");
+  const rol: Extract<RolUsuario, "organizador" | "emprendedor"> =
+    rolSolicitado === "organizador" ? "organizador" : "emprendedor";
   const aceptaTerminos = formData.get("aceptaTerminos") === "on";
 
   if (!aceptaTerminos) {
