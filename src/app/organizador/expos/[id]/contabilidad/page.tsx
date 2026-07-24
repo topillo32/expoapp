@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { CircleDollarSign, Clock3, Gift } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ExpoSubNav } from "@/components/expo-subnav";
 import { BotonDescargarCsv } from "@/components/boton-descargar-csv";
 import { TarjetaEstadistica } from "@/components/tarjeta-estadistica";
 import { formatearFecha, formatearPrecio } from "@/lib/format";
@@ -66,6 +67,7 @@ export default async function ContabilidadExpoPage({
           { label: "Contabilidad" },
         ]}
       />
+      <ExpoSubNav expoId={expo.id} activo="contabilidad" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-heading text-3xl font-semibold tracking-tight">

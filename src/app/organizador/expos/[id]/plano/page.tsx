@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ExpoSubNav } from "@/components/expo-subnav";
 import { createClient } from "@/lib/supabase/server";
 import { PlanoEditor, type UbicacionEditor } from "./plano-editor";
 
@@ -63,6 +64,7 @@ export default async function PlanoExpoPage({
           { label: "Plano" },
         ]}
       />
+      <ExpoSubNav expoId={expo.id} activo="plano" />
       <h1 className="font-heading text-3xl font-semibold tracking-tight">
         Plano de {expo.nombre}
       </h1>

@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ClipboardList, MapPin, Wallet } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ExpoForm, type ValoresInicialesExpo } from "@/components/expo-form";
-import { buttonVariants } from "@/components/ui/button";
+import { ExpoSubNav } from "@/components/expo-subnav";
 import { createClient } from "@/lib/supabase/server";
 import { actualizarExpo } from "./actions";
 
@@ -133,38 +131,14 @@ export default async function EditarExpoPage({
   return (
     <div className="mx-auto max-w-4xl">
       <Breadcrumbs items={[{ label: expo.nombre }]} />
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-heading text-3xl font-semibold tracking-tight">
-            Editar evento
-          </h1>
-          <p className="mt-1 text-muted-foreground">
-            Actualiza los datos de {expo.nombre}.
-          </p>
-        </div>
-        <div className="flex shrink-0 gap-2">
-          <Link
-            href={`/organizador/expos/${expo.id}/postulaciones`}
-            className={buttonVariants({ variant: "outline" })}
-          >
-            <ClipboardList className="size-4" />
-            Postulaciones
-          </Link>
-          <Link
-            href={`/organizador/expos/${expo.id}/plano`}
-            className={buttonVariants({ variant: "outline" })}
-          >
-            <MapPin className="size-4" />
-            Plano de puestos
-          </Link>
-          <Link
-            href={`/organizador/expos/${expo.id}/contabilidad`}
-            className={buttonVariants({ variant: "outline" })}
-          >
-            <Wallet className="size-4" />
-            Contabilidad
-          </Link>
-        </div>
+      <ExpoSubNav expoId={expo.id} activo="editar" />
+      <div>
+        <h1 className="font-heading text-3xl font-semibold tracking-tight">
+          Editar evento
+        </h1>
+        <p className="mt-1 text-muted-foreground">
+          Actualiza los datos de {expo.nombre}.
+        </p>
       </div>
 
       <div className="mt-8">

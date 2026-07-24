@@ -1,6 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Bell, ChevronDown, KeyRound, LayoutDashboard, LogOut, ShieldCheck } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  KeyRound,
+  Landmark,
+  LayoutDashboard,
+  LogOut,
+  ShieldCheck,
+  Wallet,
+} from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -78,13 +87,27 @@ export async function SiteHeader() {
           )}
 
           {user && rol === "organizador" && (
-            <Link
-              href="/organizador"
-              className="group/nav flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted-foreground hover:bg-white/5 hover:text-foreground"
-            >
-              <LayoutDashboard className="size-4 transition-colors duration-200 group-hover/nav:text-primary" />
-              Mi panel
-            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="group/nav flex items-center gap-1.5 rounded-md px-3 py-1.5 text-muted-foreground outline-none hover:bg-white/5 hover:text-foreground aria-expanded:bg-white/5 aria-expanded:text-foreground">
+                <LayoutDashboard className="size-4 transition-colors duration-200 group-hover/nav:text-primary" />
+                Mi panel
+                <ChevronDown className="size-3.5 text-muted-foreground transition-transform duration-200 group-aria-expanded/nav:rotate-180" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem render={<Link href="/organizador" />}>
+                  <LayoutDashboard />
+                  Mis eventos
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/organizador/contabilidad" />}>
+                  <Wallet />
+                  Contabilidad
+                </DropdownMenuItem>
+                <DropdownMenuItem render={<Link href="/organizador/cuentas" />}>
+                  <Landmark />
+                  Cuentas bancarias
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
 
           {user && rol === "admin" && (

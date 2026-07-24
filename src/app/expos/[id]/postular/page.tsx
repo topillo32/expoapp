@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { PostularForm, type TipoDisponible, type UbicacionDisponible } from "./postular-form";
 
@@ -102,6 +104,13 @@ export default async function PostularPage({
   return (
     <div className="flex flex-1 flex-col bg-background">
       <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
+        <Link
+          href={`/expos/${expo.id}`}
+          className="mb-4 flex w-fit items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-3.5" />
+          Volver a {expo.nombre}
+        </Link>
         <h1 className="font-heading text-3xl font-semibold tracking-tight">
           Postularme a {expo.nombre}
         </h1>
